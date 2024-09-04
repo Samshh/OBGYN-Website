@@ -1,0 +1,55 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#e7e7e7] text-[#161616] font-main antialiased flex flex-col items-center justify-center;
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  *:focus {
+    outline: none;
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  p {
+    @apply text-[0.75rem] font-normal;
+  }
+
+  h1 {
+    font-size: var(--text-h1-size);
+    @apply font-bold;
+  }
+
+  h2 {
+    font-size: var(--text-h2-size);
+    @apply font-semibold;
+  }
+
+  h3 {
+    font-size: var(--text-h3-size);
+    @apply font-medium;
+  }
+
+  h4 {
+    font-size: var(--text-h4-size);
+    @apply font-normal;
+  }
+}
+
+:root {
+  --text-h1-size: 2.25rem;
+  --text-h2-size: 1.875rem;
+  --text-h3-size: 1.5rem;
+  --text-h4-size: 1.125rem;
+  --font-main: "Poppins";
+}
