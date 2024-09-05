@@ -1,7 +1,7 @@
 export default function DoctorFold() {
   return(
-    <div>
+    <section>
       <h1>Doctor Page</h1>
-    </div>
+    </section>
   );
 }

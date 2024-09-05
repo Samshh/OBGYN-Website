@@ -4,27 +4,45 @@ import HomeFold from "./folds/home-fold";
 import LoginFold from "./folds/login-fold";
 import PatientFold from "./folds/patient-fold";
 import RegisterFold from "./folds/register-fold";
+import HomeLayout from "./Layouts/HomeLayout";
+import DoctorLayout from "./Layouts/DoctorLayout";
+import PatientLayout from "./Layouts/PatientLayout";
 
 const Router = createBrowserRouter([
   {
-    path: "/",
-    element: <HomeFold />,
+    element: <HomeLayout />,
+    children: [
+      {
+        path: "/",
+        element: <HomeFold />,
+      },
+      {
+        path: "/login",
+        element: <LoginFold />,
+      },
+      {
+        path: "/register",
+        element: <RegisterFold />,
+      },
+    ],
   },
   {
-    path: "/login",
-    element: <LoginFold />,
+    element: <DoctorLayout />,
+    children: [
+      {
+        path: "/doctor",
+        element: <DoctorFold />,
+      },
+    ],
   },
   {
-    path: "/register",
-    element: <RegisterFold />,
-  },
-  {
-    path: "/doctor",
-    element: <DoctorFold />,
-  },
-  {
-    path: "/patient",
-    element: <PatientFold />,
+    element: <PatientLayout />,
+    children: [
+      {
+        path: "/patient",
+        element: <PatientFold />,
+      },
+    ],
   },
   {
     path: "*",

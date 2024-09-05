@@ -17,6 +17,12 @@ module.exports = {
       },
     },
     extend: {
+      colors: {
+        accent: "var(--accent-color)",
+        black: "var(--black-color)",
+        white: "var(--white-color)",
+        border: "var(--border-color)",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -26,6 +32,9 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+      },
+      fontSize: {
+        button: "var(--text-button)"
       },
       fontFamily: {
         main: "var(--font-main)"

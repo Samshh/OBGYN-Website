@@ -1,7 +1,8 @@
 export default function HomeFold() {
   return(
-    <div>
-      <h1>Home Page</h1>
-    </div>
+    <section>
+      <p>Tel. No. 222-1965</p>
+      <h1>Dr. Juliet Coching <span>OB/GYN</span> Clinic<span>.</span></h1>
+    </section>
   );
 }

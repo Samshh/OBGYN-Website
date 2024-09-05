@@ -1,7 +1,7 @@
 export default function RegisterFold() {
   return(
-    <div>
+    <section>
       <h1>Register Page</h1>
-    </div>
+    </section>
   );
 }
