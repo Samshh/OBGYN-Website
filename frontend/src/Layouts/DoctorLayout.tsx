@@ -1,4 +1,5 @@
 import DoctorNav from "@/navs/DoctorNav";
+import TitleHandler from "@/TitleHandler";
 import { Outlet } from "react-router-dom";
 
 export default function DoctorLayout() {
@@ -6,6 +7,7 @@ export default function DoctorLayout() {
     <>
       <Outlet />
       <DoctorNav />
+      <TitleHandler />
     </>
   );
 }

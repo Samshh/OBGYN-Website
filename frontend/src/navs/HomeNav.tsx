@@ -1,8 +1,12 @@
 export default function HomeNav() {
   return (
-    <nav>
+    <nav id="navHome">
       <div id="nav">
-        <h1>HomeNav</h1>
+        <img className="h-[44px] md:h-[55px]" src="logo.svg" alt="" />
+        <div className="flex gap-[1rem]">
+          <button>Login</button>
+          <button>Register</button>
+        </div>
       </div>
     </nav>
   );

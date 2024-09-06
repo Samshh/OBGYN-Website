@@ -33,9 +33,6 @@ module.exports = {
           to: { height: "0" },
         },
       },
-      fontSize: {
-        button: "var(--text-button)"
-      },
       fontFamily: {
         main: "var(--font-main)"
       },
