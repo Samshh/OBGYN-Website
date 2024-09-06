@@ -63,13 +63,12 @@
   }
 
   button {
-    @apply font-medium text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border-2 border-border bg-white;
+    @apply font-medium text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border-2 border-border bg-white hover:bg-accent hover:text-white transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:text-white disabled:bg-accent disabled:opacity-50;
   }
 
   #root {
     @apply relative h-screen flex flex-col;
   }
-
 }
 
 :root {
