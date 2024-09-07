@@ -17,6 +17,19 @@
     min-height: 100vh;
   }
 
+  ::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+    
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
   /* Overflow Debugger */
   /* * {
     @apply !bg-green-500/10;
@@ -68,21 +81,29 @@
   /* Buttons */
 
   button {
-    @apply font-medium text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border-2 border-border bg-white hover:bg-accent hover:text-white transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:text-white disabled:bg-accent disabled:opacity-50;
+    @apply font-medium text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border-2 border-border bg-white hover:bg-accent hover:text-white hover:border-accent transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:text-white disabled:bg-accent disabled:opacity-50 disabled:border-accent;
   }
 
-  #specialButton {
+  .specialButton {
     @apply font-medium text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border-2 text-white border-accent bg-accent hover:bg-white hover:text-accent transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:opacity-50;
   }
 
 
   /* Forms */
 
+  #homeForm {
+    @apply flex flex-col gap-[2rem] w-full max-w-[480px];
+  }
+
   label {
     @apply font-medium text-[0.85rem] md:text-[1.25rem];
   }
 
   input {
+    @apply font-normal text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border-2 border-border bg-white focus:outline-none focus:border-accent;
+  }
+
+  select {
     @apply font-normal text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border-2 border-border bg-white focus:outline-none focus:border-accent;
   }
 }

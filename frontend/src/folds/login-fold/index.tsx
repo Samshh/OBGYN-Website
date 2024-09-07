@@ -27,17 +27,19 @@ export default function LoginFold() {
     setPassword(e.target.value);
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
+
   return (
     <section>
       <div className="flex flex-grow flex-col justify-center gap-[2rem] items-center">
-        <form className="flex flex-col gap-[2rem] w-full max-w-[640px]">
-          <div className="flex w-full justify-start items-center">
-            <h1 className="text-black">
-              Login<em className="font-normal text-accent">.</em>
-            </h1>
-          </div>
+        <form id="homeForm" onSubmit={handleSubmit}>
+          <h1>
+            Login<em className="font-normal text-accent">.</em>
+          </h1>
           <div className="flex flex-col gap-[1rem]">
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-[0.5rem]">
               <label htmlFor="username">
                 Username
                 {!isUsernameValid && <span className="text-red-500"> *</span>}
@@ -51,7 +53,7 @@ export default function LoginFold() {
                 onChange={handleUsernameChange}
               />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-[0.5rem]">
               <label htmlFor="password">
                 Password
                 {!isPasswordValid && <span className="text-red-500"> *</span>}
@@ -66,7 +68,7 @@ export default function LoginFold() {
               />
             </div>
           </div>
-          <button id="specialButton" disabled={!isFormValid}>
+          <button className="specialButton" disabled={!isFormValid}>
             Login
           </button>
         </form>
