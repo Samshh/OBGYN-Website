@@ -1,24 +1,72 @@
+import { useState, useEffect, useCallback } from "react";
+
 export default function LoginFold() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [isUsernameValid, setIsUsernameValid] = useState(true);
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
+
+  const validateForm = useCallback(() => {
+    const usernameValid = username.trim().length > 0;
+    const passwordValid = password.length >= 8;
+    setIsUsernameValid(usernameValid);
+    setIsPasswordValid(passwordValid);
+    setIsFormValid(usernameValid && passwordValid);
+  }, [username, password]);
+
+  useEffect(() => {
+    validateForm();
+  }, [username, password, validateForm]);
+
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
   return (
     <section>
       <div className="flex flex-grow flex-col justify-center gap-[2rem] items-center">
-        <form action="" className="flex flex-col gap-[2rem] w-full max-w-[640px]">
+        <form className="flex flex-col gap-[2rem] w-full max-w-[640px]">
           <div className="flex w-full justify-start items-center">
             <h1 className="text-black">
-              Login<em>.</em>
+              Login<em className="font-normal text-accent">.</em>
             </h1>
           </div>
           <div className="flex flex-col gap-[1rem]">
             <div className="flex flex-col">
-              <label htmlFor="username">Username</label>
-              <input type="text" name="username" id="username" placeholder="samshh"/>
+              <label htmlFor="username">
+                Username
+                {!isUsernameValid && <span className="text-red-500"> *</span>}
+              </label>
+              <input
+                type="text"
+                name="username"
+                id="username"
+                placeholder="samshh"
+                value={username}
+                onChange={handleUsernameChange}
+              />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="password">Password</label>
-              <input type="password" name="password" id="password" placeholder="8 Chars, Ab, 123, !#*" />
+              <label htmlFor="password">
+                Password
+                {!isPasswordValid && <span className="text-red-500"> *</span>}
+              </label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="8 Chars, Ab, 123, !#*"
+                value={password}
+                onChange={handlePasswordChange}
+              />
             </div>
           </div>
-          <button id="specialButton" type="submit">
+          <button id="specialButton" disabled={!isFormValid}>
             Login
           </button>
         </form>

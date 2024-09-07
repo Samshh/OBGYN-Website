@@ -1,40 +1,41 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 export default function HomeNav() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLogin, setIsLogin] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
 
   useEffect(() => {
-    const savedIsLogin = localStorage.getItem("isLogin") === "true";
-    const savedIsRegister = localStorage.getItem("isRegister") === "true";
-    setIsLogin(savedIsLogin);
-    setIsRegister(savedIsRegister);
-  }, []);
+    if (location.pathname === "/login") {
+      setIsLogin(true);
+      setIsRegister(false);
+    } else if (location.pathname === "/register") {
+      setIsRegister(true);
+      setIsLogin(false);
+    } else {
+      setIsLogin(false);
+      setIsRegister(false);
+    }
+  }, [location.pathname]);
 
   const handleLoginClick = () => {
     navigate("/login");
     setIsLogin(true);
     setIsRegister(false);
-    localStorage.setItem("isLogin", "true");
-    localStorage.setItem("isRegister", "false");
   };
 
   const handleRegisterClick = () => {
     navigate("/register");
     setIsRegister(true);
     setIsLogin(false);
-    localStorage.setItem("isRegister", "true");
-    localStorage.setItem("isLogin", "false");
   };
 
   const handleLogoClick = () => {
     navigate("/");
     setIsLogin(false);
     setIsRegister(false);
-    localStorage.setItem("isLogin", "false");
-    localStorage.setItem("isRegister", "false");
   };
 
   return (
