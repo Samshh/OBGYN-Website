@@ -26,6 +26,8 @@
     @apply !bg-green-500/10;
   } */
 
+  /* Typography */
+
   h1 {
     @apply font-bold text-[2.5rem] md:text-[3rem] leading-tight;
   }
@@ -47,9 +49,17 @@
     @apply text-accent;
   }
 
+  /* Layout */
+
   section {
     @apply p-[1rem] max-w-[1280px] w-full mx-auto flex-grow flex flex-col;
   }
+  
+  #root {
+    @apply relative h-screen flex flex-col;
+  }
+
+  /* Navs */
 
   #nav {
     @apply max-w-[1280px] p-[1rem] mx-auto flex justify-between items-center bg-white;
@@ -59,12 +69,25 @@
     @apply sticky z-50 w-screen;
   }
 
+  /* Buttons */
+
   button {
     @apply font-medium text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border-2 border-border bg-white hover:bg-accent hover:text-white transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:text-white disabled:bg-accent disabled:opacity-50;
   }
 
-  #root {
-    @apply relative h-screen flex flex-col;
+  #specialButton {
+    @apply font-medium text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border-2 text-white border-accent bg-accent hover:bg-white hover:text-accent transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:opacity-50;
+  }
+
+
+  /* Forms */
+
+  label {
+    @apply font-medium text-[0.85rem] md:text-[1.25rem];
+  }
+
+  input {
+    @apply font-normal text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border-2 border-border bg-white focus:outline-none focus:border-accent;
   }
 }
 
