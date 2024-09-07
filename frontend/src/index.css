@@ -8,10 +8,6 @@
     @apply bg-white text-black font-main antialiased flex flex-col items-center justify-center;
   }
 
-  body::-webkit-scrollbar {
-    display: none;
-  }
-
   *:focus {
     outline: none;
   }

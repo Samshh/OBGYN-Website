@@ -11,11 +11,11 @@ export default function LoginFold() {
           <div className="flex flex-col gap-[1rem]">
             <div className="flex flex-col">
               <label htmlFor="username">Username</label>
-              <input type="text" name="username" id="username" />
+              <input type="text" name="username" id="username" placeholder="samshh"/>
             </div>
             <div className="flex flex-col">
               <label htmlFor="password">Password</label>
-              <input type="password" name="password" id="password" />
+              <input type="password" name="password" id="password" placeholder="8 Chars, Ab, 123, !#*" />
             </div>
           </div>
           <button id="specialButton" type="submit">
