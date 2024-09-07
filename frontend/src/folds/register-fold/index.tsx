@@ -62,7 +62,7 @@ export default function RegisterFold() {
             <p>Step {step} of 2</p>
           </div>
           <div className="overflow-y-scroll">
-            <div className="flex flex-col gap-[1rem] h-[300px]">
+            <div className="flex flex-col gap-[1rem] h-[320px] md:h-[480px]">
               {step === 1 ? (
                 <RegisterStep1 />
               ) : step === 2 ? (
