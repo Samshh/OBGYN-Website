@@ -42,16 +42,13 @@
     @apply font-normal text-[0.85rem] md:text-[1.25rem];
   }
 
-  span {
+  em {
+    font-style: normal;
     @apply text-accent;
   }
 
   section {
     @apply p-[1rem] max-w-[1280px] w-full mx-auto flex-grow flex flex-col;
-  }
-
-  #navHome {
-    @apply fixed top-0;
   }
 
   #nav {

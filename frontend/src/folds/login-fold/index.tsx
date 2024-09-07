@@ -1,7 +1,7 @@
 export default function LoginFold() {
   return(
     <section>
-      <h1>Login Page</h1>
+      <h1 className="text-black">Login<span>.</span></h1>
     </section>
   );
 }

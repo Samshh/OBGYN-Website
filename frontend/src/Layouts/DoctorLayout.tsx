@@ -5,9 +5,9 @@ import { Outlet } from "react-router-dom";
 export default function DoctorLayout() {
   return (
     <>
+      <TitleHandler />
       <Outlet />
       <DoctorNav />
-      <TitleHandler />
     </>
   );
 }
