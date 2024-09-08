@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, ChangeEvent } from "react";
 
 export default function LoginFold() {
   const [username, setUsername] = useState("");
@@ -19,12 +19,9 @@ export default function LoginFold() {
     validateForm();
   }, [username, password, validateForm]);
 
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value);
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
+  const handleChange =
+  (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
+    setter(e.target.value);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -50,7 +47,7 @@ export default function LoginFold() {
                 id="username"
                 placeholder="samshh"
                 value={username}
-                onChange={handleUsernameChange}
+                onChange={handleChange(setUsername)}
               />
             </div>
             <div className="flex flex-col gap-[0.5rem]">
@@ -64,11 +61,11 @@ export default function LoginFold() {
                 id="password"
                 placeholder="8 Chars, Ab, 123, !#*"
                 value={password}
-                onChange={handlePasswordChange}
+                onChange={handleChange(setPassword)}
               />
             </div>
           </div>
-          <button className="specialButton" disabled={!isFormValid}>
+          <button type="submit" className="specialButton" disabled={!isFormValid}>
             Login
           </button>
         </form>

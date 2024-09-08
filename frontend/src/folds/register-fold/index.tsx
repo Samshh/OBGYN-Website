@@ -19,6 +19,12 @@ export default function RegisterFold() {
     birthDate,
     seggs,
     homeAddress,
+
+    // step 2
+    username,
+    password,
+    contactNumber,
+    emailAddress,
   ] = useRegisterStore(
     useShallow((state) => [
       state.step,
@@ -33,6 +39,12 @@ export default function RegisterFold() {
       state.birthDate,
       state.seggs,
       state.homeAddress,
+
+      // step 2
+      state.username,
+      state.password,
+      state.contactNumber,
+      state.emailAddress,
     ])
   );
 
@@ -49,6 +61,31 @@ export default function RegisterFold() {
       seggs &&
       homeAddress
     );
+  };
+
+  const isStep2Valid = () => {
+    return (
+      username &&
+      password &&
+      contactNumber &&
+      emailAddress
+    );
+  };
+
+  const handleData = () => {
+    // handle POST here
+    console.log({
+      firstName,
+      middleName,
+      lastName,
+      birthDate,
+      seggs,
+      homeAddress,
+      username,
+      password,
+      contactNumber,
+      emailAddress,
+    });
   };
 
   return (
@@ -82,8 +119,9 @@ export default function RegisterFold() {
             {step === 2 ? (
               <button
                 type="button"
-                onClick={() => goToNextStep()}
+                onClick={() => handleData()}
                 className="specialButton"
+                disabled={!isStep2Valid()}
               >
                 Finish
               </button>

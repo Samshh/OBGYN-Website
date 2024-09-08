@@ -52,7 +52,9 @@ export default function RegisterStep1() {
         />
       </div>
       <div className="flex flex-col gap-[0.5rem]">
-        <label htmlFor="middleName">Middle Name{!middleName && <span className="text-red-500"> *</span>}</label>
+        <label htmlFor="middleName">
+          Middle Name{!middleName && <span className="text-red-500"> *</span>}
+        </label>
         <input
           type="text"
           value={middleName || ""}
@@ -61,7 +63,9 @@ export default function RegisterStep1() {
         />
       </div>
       <div className="flex flex-col gap-[0.5rem]">
-        <label htmlFor="lastName">Last Name{!lastName && <span className="text-red-500"> *</span>}</label>
+        <label htmlFor="lastName">
+          Last Name{!lastName && <span className="text-red-500"> *</span>}
+        </label>
         <input
           type="text"
           value={lastName || ""}
@@ -70,7 +74,9 @@ export default function RegisterStep1() {
         />
       </div>
       <div className="flex flex-col gap-[0.5rem]">
-        <label htmlFor="birthDate">Birth Date{!birthDate && <span className="text-red-500"> *</span>}</label>
+        <label htmlFor="birthDate">
+          Birth Date{!birthDate && <span className="text-red-500"> *</span>}
+        </label>
         <input
           type="text"
           value={birthDate || ""}
@@ -79,7 +85,9 @@ export default function RegisterStep1() {
         />
       </div>
       <div className="flex flex-col gap-[0.5rem]">
-        <label htmlFor="seggs">Sex{!seggs && <span className="text-red-500"> *</span>}</label>
+        <label htmlFor="seggs">
+          Sex{!seggs && <span className="text-red-500"> *</span>}
+        </label>
         <select
           id="seggs"
           value={seggs || ""}
@@ -89,13 +97,17 @@ export default function RegisterStep1() {
             )
           }
         >
-          <option value="" disabled>Select</option>
+          <option value="" disabled>
+            Select
+          </option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
         </select>
       </div>
       <div className="flex flex-col gap-[0.5rem]">
-        <label htmlFor="homeAddress">Home Address{!homeAddress && <span className="text-red-500"> *</span>}</label>
+        <label htmlFor="homeAddress">
+          Home Address{!homeAddress && <span className="text-red-500"> *</span>}
+        </label>
         <input
           type="text"
           value={homeAddress || ""}

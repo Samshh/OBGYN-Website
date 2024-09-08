@@ -76,7 +76,7 @@
   }
 
   nav {
-    @apply sticky z-50 w-screen;
+    @apply sticky top-0 z-50 w-screen;
   }
 
   /* Buttons */

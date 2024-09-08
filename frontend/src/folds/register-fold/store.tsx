@@ -16,9 +16,6 @@ interface RegisterStore {
   password: string | null;
   contactNumber: string | null;
   emailAddress: string | null;
-
-  // final
-  finish: boolean;
 }
 
 interface RegisterActions {
@@ -39,9 +36,6 @@ interface RegisterActions {
   setPassword: (newPassword: string) => void;
   setContactNumber: (newContactNumber: string) => void;
   setEmailAddress: (newEmailAddress: string) => void;
-
-  // final
-  finishRegistration: (newFinishRegistration: boolean) => void;
 }
 
 type RegisterState = RegisterStore & RegisterActions;
@@ -62,9 +56,6 @@ const defaultValues: RegisterStore = {
   password: null,
   contactNumber: null,
   emailAddress: null,
-
-  // final
-  finish: false,
 };
 
 const useRegisterStore = create<RegisterState>((set) => ({
@@ -108,10 +99,6 @@ const useRegisterStore = create<RegisterState>((set) => ({
   setContactNumber: (newContactNumber) =>
     set({ contactNumber: newContactNumber }),
   setEmailAddress: (newEmailAddress) => set({ emailAddress: newEmailAddress }),
-
-  // final
-  finishRegistration: (newFinishRegistration) =>
-    set({ finish: newFinishRegistration }),
 }));
 
 export default useRegisterStore;
