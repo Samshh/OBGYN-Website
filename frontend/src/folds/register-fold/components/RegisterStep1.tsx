@@ -1,4 +1,6 @@
 import { ChangeEvent } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import useRegisterStore from "../store";
 import { useShallow } from "zustand/react/shallow";
 
@@ -77,11 +79,18 @@ export default function RegisterStep1() {
         <label htmlFor="birthDate">
           Birth Date{!birthDate && <span className="text-red-500"> *</span>}
         </label>
-        <input
-          type="text"
-          value={birthDate || ""}
-          onChange={handleChange(setBirthDate)}
-          placeholder="09-04-03"
+        <DatePicker
+          selected={birthDate ? new Date(birthDate) : null}
+          onChange={(date) =>
+            setBirthDate(date ? date.toISOString().split("T")[0] : "")
+          }
+          dateFormat="yyyy-MM-dd"
+          placeholderText="Select a date"
+          className="font-normal text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border-2 border-border bg-white focus:outline-none focus:border-accent w-full"
+          showYearDropdown
+          showMonthDropdown
+          dropdownMode="scroll"
+          maxDate={new Date()}
         />
       </div>
       <div className="flex flex-col gap-[0.5rem]">

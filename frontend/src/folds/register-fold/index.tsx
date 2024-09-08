@@ -1,9 +1,9 @@
-import useRegisterStore from "./store";
-import { useShallow } from "zustand/react/shallow";
 import RegisterStep1 from "./components/RegisterStep1";
 import RegisterStep2 from "./components/RegisterStep2";
-import { Navigate } from "react-router-dom";
 import { useEffect } from "react";
+import useRegisterStore from "./store";
+import { useShallow } from "zustand/react/shallow";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function RegisterFold() {
   const [
@@ -48,32 +48,44 @@ export default function RegisterFold() {
     ])
   );
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     resetValues();
   }, [resetValues]);
 
+  const validateUsername = (username: string | null) => {
+    const usernameRegex = /^[a-zA-Z0-9]{3,15}$/;
+    return usernameRegex.test(username ?? "");
+  };
+
+  const validatePassword = (password: string | null) => {
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password ?? "");
+  };
+
+  const validateEmail = (emailAddress: string | null) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(emailAddress ?? "");
+  };
+
   const isStep1Valid = () => {
     return (
-      firstName &&
-      middleName &&
-      lastName &&
-      birthDate &&
-      seggs &&
-      homeAddress
+      firstName && middleName && lastName && birthDate && seggs && homeAddress
     );
   };
 
   const isStep2Valid = () => {
     return (
-      username &&
-      password &&
-      contactNumber &&
-      emailAddress
+      validateUsername(username) &&
+      validatePassword(password) &&
+      validateEmail(emailAddress) &&
+      contactNumber
     );
   };
 
   const handleData = () => {
-    // handle POST here
     console.log({
       firstName,
       middleName,
@@ -103,7 +115,11 @@ export default function RegisterFold() {
               {step === 1 ? (
                 <RegisterStep1 />
               ) : step === 2 ? (
-                <RegisterStep2 />
+                <RegisterStep2
+                  validateUsername={validateUsername}
+                  validatePassword={validatePassword}
+                  validateEmail={validateEmail}
+                />
               ) : (
                 <Navigate to="/register" />
               )}
@@ -115,11 +131,10 @@ export default function RegisterFold() {
                 Back
               </button>
             )}
-
             {step === 2 ? (
               <button
                 type="button"
-                onClick={() => handleData()}
+                onClick={() => (handleData(), navigate("/login"))}
                 className="specialButton"
                 disabled={!isStep2Valid()}
               >
