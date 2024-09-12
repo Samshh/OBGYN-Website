@@ -39,7 +39,7 @@ export default function HomeNav() {
   };
 
   return (
-    <nav>
+    <nav className="homeNav">
       <div id="nav">
         <img
           onClick={handleLogoClick}

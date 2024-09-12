@@ -1,7 +1,19 @@
+import useDoctorStore from "./store";
+import Dashboard from "./dashboard";
+import Patients from "./patients";
+import Schedule from "./schedule";
+
 export default function DoctorFold() {
-  return(
+  const currentTab = useDoctorStore((state) => state.currentTab);
+  return (
     <section>
-      <h1>Doctor Page</h1>
+      {currentTab === 1 ? (
+        <Dashboard />
+      ) : currentTab === 2 ? (
+        <Patients />
+      ) : currentTab === 3 ? (
+        <Schedule />
+      ) : null}
     </section>
   );
 }

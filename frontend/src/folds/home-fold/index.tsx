@@ -16,7 +16,7 @@ export default function HomeFold() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col justify-center items-start border-border border-2 rounded-md p-[1rem] w-fit">
+        <div className="flex flex-col justify-center items-start border-border border rounded-md p-[1rem] w-fit">
           <h2>
             Clinic Hours<em>.</em>
           </h2>

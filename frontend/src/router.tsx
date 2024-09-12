@@ -4,9 +4,9 @@ import HomeFold from "./folds/home-fold";
 import LoginFold from "./folds/login-fold";
 import PatientFold from "./folds/patient-fold";
 import RegisterFold from "./folds/register-fold";
-import HomeLayout from "./Layouts/HomeLayout";
-import DoctorLayout from "./Layouts/DoctorLayout";
-import PatientLayout from "./Layouts/PatientLayout";
+import HomeLayout from "./layout/HomeLayout";
+import DoctorLayout from "./layout/DoctorLayout";
+import PatientLayout from "./layout/PatientLayout";
 
 const Router = createBrowserRouter([
   {
