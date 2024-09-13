@@ -125,7 +125,7 @@ export default function RegisterFold() {
               )}
             </div>
           </div>
-          <div className="flex justify-end items-center gap-[1rem]">
+          <div className="flex justify-end items-center gap-[1rem] sticky bottom-0 p-[1rem]">
             {step === 2 && (
               <button type="button" onClick={() => goToPrevStep()}>
                 Back

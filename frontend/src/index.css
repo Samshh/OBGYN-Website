@@ -19,7 +19,7 @@
   }
 
   ::-webkit-scrollbar {
-    width: 0.5rem;
+    width: 0.25rem;
   }
     
   ::-webkit-scrollbar-thumb {
@@ -47,7 +47,7 @@
   }
 
   h3 {
-    @apply font-medium text-[1.5rem] md:text-[2rem];
+    @apply font-normal text-[1.5rem] md:text-[2rem];
   }
 
   p {
@@ -62,7 +62,7 @@
   /* Layout */
 
   section {
-    @apply p-[1rem] max-w-[1280px] w-full mx-auto flex-grow flex flex-col;
+    @apply p-[1rem] max-w-[1280px] w-full mx-auto flex-grow flex flex-col h-auto;
   }
   
   #root {
