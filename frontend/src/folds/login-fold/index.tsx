@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginFold() {
   const [username, setUsername] = useState("");
@@ -6,6 +7,8 @@ export default function LoginFold() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isUsernameValid, setIsUsernameValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
+
+  const navigate = useNavigate();
 
   const validateForm = useCallback(() => {
     const usernameValid = username.trim().length > 0;
@@ -26,6 +29,7 @@ export default function LoginFold() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    navigate("/doctor");
   };
 
   return (

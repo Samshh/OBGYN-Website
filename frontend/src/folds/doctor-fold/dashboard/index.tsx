@@ -1,94 +1,31 @@
 import DashCard from "@/UI/DashCard";
 import DataTable from "@/UI/DataTable";
+import { TableData } from "./data";
 
 export default function Dashboard() {
-  const TableData = [
+
+  const currentDate = new Date().toLocaleDateString();
+
+  const filteredTableData = TableData.filter((appointment) => {
+    const appointmentDate = new Date(
+      appointment.StartDateTime
+    ).toLocaleDateString();
+    return appointmentDate === currentDate;
+  });
+
+  const columns = [
     {
-      AppointmentID: 1,
-      Patient: {
-        PatientID: 1,
-        FirstName: "Sam",
-        LastName: "Dacara",
+      header: "Patient",
+      key: (row: Record<string, unknown>) => {
+        const patient = row.Patient as { FirstName: string; LastName: string };
+        return `${patient.FirstName} ${patient.LastName}`;
       },
-      ETA: "17:00",
-      Status: {
-        StatusID: 1,
-        Status: "Pending", // Pending, Done, Cancelled
-      },
-      Note: "Patient requested reschedule.",
     },
-    {
-      AppointmentID: 2,
-      Patient: {
-        PatientID: 2,
-        FirstName: "Jane",
-        LastName: "Doe",
-      },
-      ETA: "14:30",
-      Status: {
-        StatusID: 2,
-        Status: "Done",
-      },
-      Note: "Routine check-up completed.",
-    },
-    {
-      AppointmentID: 3,
-      Patient: {
-        PatientID: 3,
-        FirstName: "John",
-        LastName: "Smith",
-      },
-      ETA: "10:45",
-      Status: {
-        StatusID: 1,
-        Status: "Pending",
-      },
-      Note: "Patient is running late.",
-    },
-    {
-      AppointmentID: 4,
-      Patient: {
-        PatientID: 4,
-        FirstName: "Emily",
-        LastName: "Clark",
-      },
-      ETA: "09:15",
-      Status: {
-        StatusID: 3,
-        Status: "Cancelled",
-      },
-      Note: "Patient cancelled due to emergency.",
-    },
-    {
-      AppointmentID: 5,
-      Patient: {
-        PatientID: 5,
-        FirstName: "Michael",
-        LastName: "Brown",
-      },
-      ETA: "16:00",
-      Status: {
-        StatusID: 1,
-        Status: "Pending",
-      },
-      Note: "Follow-up appointment scheduled.",
-    },
-    {
-      AppointmentID: 6,
-      Patient: {
-        PatientID: 6,
-        FirstName: "Olivia",
-        LastName: "Davis",
-      },
-      ETA: "12:00",
-      Status: {
-        StatusID: 2,
-        Status: "Done",
-      },
-      Note: "Blood test results delivered.",
-    },
+    { header: "ETA", key: "ETA" },
+    { header: "Status", key: "Status.Status" },
+    { header: "Note", key: "Note" },
   ];
-  
+
   return (
     <div className="flex-grow flex flex-col h-auto">
       <div className="flex-col flex gap-[1rem]">
@@ -105,7 +42,11 @@ export default function Dashboard() {
             <DashCard.Title>Appointments</DashCard.Title>
             <DashCard.Separator />
             <DashCard.Content className="overflow-y-auto">
-              <DataTable className="w-full" data={TableData} />
+              <DataTable
+                className="w-full"
+                data={filteredTableData}
+                columns={columns}
+              />
             </DashCard.Content>
           </DashCard>
           <DashCard>
