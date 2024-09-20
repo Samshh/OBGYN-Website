@@ -7,12 +7,14 @@ interface DataTableProps {
   className?: string;
   data: Array<Record<string, unknown>>;
   columns: Array<Column>;
+  onRowClick?: (row: Record<string, unknown>) => void;
 }
 
 export default function DataTable({
   className,
   data,
   columns,
+  onRowClick,
 }: DataTableProps) {
   if (!data.length) return null;
 
@@ -29,6 +31,12 @@ export default function DataTable({
       }
       return undefined;
     }, row) as string | undefined;
+  };
+
+  const handleRowClick = (row: Record<string, unknown>) => {
+    if (onRowClick) {
+      onRowClick(row);
+    }
   };
 
   return (
@@ -49,7 +57,11 @@ export default function DataTable({
         </thead>
         <tbody className="bg-white divide-y">
           {data.map((row, rowIndex) => (
-            <tr key={rowIndex}>
+            <tr
+              key={rowIndex}
+              onClick={() => handleRowClick(row)}
+              className="cursor-pointer hover:bg-border rounded-lg"
+            >
               {columns.map((column, colIndex) => (
                 <td
                   key={colIndex}

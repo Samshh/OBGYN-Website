@@ -4,14 +4,14 @@ import { TableData } from "./data";
 
 export default function Dashboard() {
 
-  const currentDate = new Date().toLocaleDateString();
+  // const currentDate = new Date().toLocaleDateString();
 
-  const filteredTableData = TableData.filter((appointment) => {
-    const appointmentDate = new Date(
-      appointment.StartDateTime
-    ).toLocaleDateString();
-    return appointmentDate === currentDate;
-  });
+  // const filteredTableData = TableData.filter((appointment) => {
+  //   const appointmentDate = new Date(
+  //     appointment.StartDateTime
+  //   ).toLocaleDateString();
+  //   return appointmentDate === currentDate;
+  // });
 
   const columns = [
     {
@@ -44,8 +44,9 @@ export default function Dashboard() {
             <DashCard.Content className="overflow-y-auto">
               <DataTable
                 className="w-full"
-                data={filteredTableData}
+                data={TableData}
                 columns={columns}
+                onRowClick={(row) => console.log(row)}
               />
             </DashCard.Content>
           </DashCard>

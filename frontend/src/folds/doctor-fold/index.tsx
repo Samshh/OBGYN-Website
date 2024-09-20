@@ -1,6 +1,6 @@
 import useDoctorStore from "./store";
 import Dashboard from "./dashboard";
-import Patients from "./patients";
+import Patients from "./profile";
 import Schedule from "./schedule";
 
 export default function DoctorFold() {

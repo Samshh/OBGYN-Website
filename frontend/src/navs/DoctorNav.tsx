@@ -33,7 +33,7 @@ export default function DoctorNav() {
           }`}
           title="home"
         >
-          <Icon className="Icon" icon="heroicons:clipboard" />
+          <Icon className="Icon" icon="heroicons:user" />
         </button>
         <button
           onClick={() => setCurrentTab(3)}
