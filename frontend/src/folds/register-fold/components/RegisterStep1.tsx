@@ -86,7 +86,7 @@ export default function RegisterStep1() {
           }
           dateFormat="yyyy-MM-dd"
           placeholderText="Select a date"
-          className="font-normal text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border-2 border-border bg-white focus:outline-none focus:border-accent w-full"
+          className="w-full"
           showYearDropdown
           showMonthDropdown
           dropdownMode="scroll"

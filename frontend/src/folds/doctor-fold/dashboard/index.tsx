@@ -1,6 +1,6 @@
 import DashCard from "@/UI/DashCard";
 import DataTable from "@/UI/DataTable";
-import { TableData } from "./data";
+import { AppointmentData } from "./data";
 
 export default function Dashboard() {
 
@@ -37,27 +37,17 @@ export default function Dashboard() {
             Dr<em>.</em> Juliet
           </h1>
         </div>
-        <div className="grid md:grid-cols-2 grid-cols-1 gap-[1rem]">
-          <DashCard className="h-[50vh] md:h-[60vh] lg:h-[70vh]">
+        <div className="grid grid-cols-1">
+          <DashCard className="h-full">
             <DashCard.Title>Appointments</DashCard.Title>
             <DashCard.Separator />
-            <DashCard.Content className="overflow-y-auto">
+            <DashCard.Content>
               <DataTable
                 className="w-full"
-                data={TableData}
+                data={AppointmentData}
                 columns={columns}
                 onRowClick={(row) => console.log(row)}
               />
-            </DashCard.Content>
-          </DashCard>
-          <DashCard>
-            <DashCard.Title>Patients</DashCard.Title>
-            <DashCard.Separator />
-            <DashCard.Content className="overflow-y-auto">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorum
-              perspiciatis obcaecati quibusdam enim recusandae in, adipisci quo
-              odit possimus harum omnis magni voluptatem a rem! Delectus minus
-              ipsam quos iusto.
             </DashCard.Content>
           </DashCard>
         </div>

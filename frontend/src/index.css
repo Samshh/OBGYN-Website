@@ -81,11 +81,11 @@
   /* Buttons */
 
   button {
-    @apply font-medium text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border border-border bg-white hover:bg-accent hover:text-white hover:border-accent transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:text-white disabled:bg-accent disabled:opacity-50 disabled:border-accent;
+    @apply font-medium text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border border-border bg-white hover:bg-accent hover:text-white hover:border-accent transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:text-white disabled:bg-accent disabled:opacity-50 disabled:border-accent h-fit;
   }
 
   .specialButton {
-    @apply font-medium text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border text-white border-accent bg-accent hover:bg-white hover:text-accent transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:opacity-50;
+    @apply font-medium text-[0.85rem] md:text-[1.25rem] py-2 px-4 rounded-md border text-white border-accent bg-accent hover:bg-white hover:text-accent transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:opacity-50 h-fit;
   }
 
   .innerNavButton {
