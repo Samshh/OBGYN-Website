@@ -42,8 +42,8 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
     setIsEditing(!isEditing);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSaveClick = () => {
+    // Update the profile here
     const updatedProfile = {
       FirstName: firstName,
       MiddleName: middleName,
@@ -56,143 +56,118 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
       EmailAddress: emailAddress,
     };
     console.log("Updated Profile: ", updatedProfile);
-    setIsEditing(false);
+    setIsEditing(!isEditing);
   };
 
   return (
-    <div className="p-[1.25rem] border border-border rounded-md w-fit flex flex-col justify-center items-start gap-[1rem] ">
+    <div className="p-[1.25rem] border border-border rounded-md flex flex-col justify-center items-start gap-[1rem] ">
       <div className="flex justify-between w-full items-center">
         <h2>Profile</h2>
-        <button
-          className="specialButton"
-          type="button"
-          onClick={handleEditClick}
-        >
-          {isEditing ? <>&times;</> : "Edit"}
-        </button>
-      </div>
-
-      {isEditing ? (
-        <form className="flex flex-col gap-[1.5rem]" onSubmit={handleSubmit}>
-          <label className="flex items-center gap-2">
-            First Name:
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
-          </label>
-
-          <label className="flex items-center gap-2">
-            Middle Name:
-            <input
-              type="text"
-              value={middleName}
-              onChange={(e) => setMiddleName(e.target.value)}
-            />
-          </label>
-
-          <label className="flex items-center gap-2">
-            Last Name:
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-            />
-          </label>
-
-          <label className="flex items-center gap-2">
-            Birth Date:
-            <DatePicker
-              selected={birthDate}
-              onChange={(date) => setBirthDate(date)}
-              dateFormat="yyyy-MM-dd"
-              placeholderText="Select a date"
-              className="w-full"
-              showYearDropdown
-              showMonthDropdown
-              dropdownMode="scroll"
-              maxDate={new Date()}
-            />
-          </label>
-
-          <label className="flex items-center gap-2">
-            Sex:
-            <select
-              value={sex}
-              onChange={(e) => setSex(Number(e.target.value))}
-            >
-              <option value="1">Male</option>
-              <option value="2">Female</option>
-            </select>
-          </label>
-
-          <label className="flex items-center gap-2">
-            Username:
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </label>
-
-          <label className="flex items-center gap-2">
-            Password:
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
-
-          <label className="flex items-center gap-2">
-            Contact Number:
-            <input
-              type="text"
-              value={contactNumber}
-              onChange={(e) => setContactNumber(e.target.value)}
-            />
-          </label>
-
-          <label className="flex items-center gap-2">
-            Email Address:
-            <input
-              type="email"
-              value={emailAddress}
-              onChange={(e) => setEmailAddress(e.target.value)}
-            />
-          </label>
-
-          <button type="submit" className="specialButton">
-            Save
+        <div className="flex justify-center items-center gap-[0.5rem]">
+          {isEditing && (
+            <button onClick={() => handleSaveClick()} type="button" className="specialButton">
+              Save
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={handleEditClick}
+          >
+            {isEditing ? <>&times;</> : "Edit"}
           </button>
-        </form>
-      ) : (
-        <>
-          <p>{`${profile.FirstName} ${profile.MiddleName} ${profile.LastName}`}</p>
-          <p>
-            <strong>Birth Date:</strong> {profile.BirthDate}
-          </p>
-          <p>
-            <strong>Age:</strong> {profile.Age} {/* Backend-calculated */}
-          </p>
-          <p>
-            <strong>Sex:</strong> {profile.Sex.SexName}
-          </p>
-          <p>
-            <strong>Username:</strong> {profile.Username}
-          </p>
-          <p>
-            <strong>Password:</strong> ********
-          </p>
-          <p>
-            <strong>Contact Number:</strong> {profile.ContactNumber}
-          </p>
-          <p>
-            <strong>Email Address:</strong> {profile.EmailAddress}
-          </p>
-        </>
-      )}
+        </div>
+      </div>
+      <form className="flex flex-col gap-[1rem] md:gap-[1.5rem]">
+        <label className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          First Name:
+          <input
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            readOnly={!isEditing}
+          />
+        </label>
+        <label className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          Middle Name:
+          <input
+            type="text"
+            value={middleName}
+            onChange={(e) => setMiddleName(e.target.value)}
+            readOnly={!isEditing}
+          />
+        </label>
+        <label className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          Last Name:
+          <input
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            readOnly={!isEditing}
+          />
+        </label>
+        <label className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          Birth Date:
+          <DatePicker
+            selected={birthDate}
+            onChange={(date) => setBirthDate(date)}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Select a date"
+            className="w-full"
+            showYearDropdown
+            showMonthDropdown
+            dropdownMode="scroll"
+            maxDate={new Date()}
+            readOnly={!isEditing}
+          />
+        </label>
+        <label className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          Sex:
+          <select
+            value={sex}
+            onChange={(e) => setSex(Number(e.target.value))}
+            disabled={!isEditing}
+          >
+            <option value="1">Male</option>
+            <option value="2">Female</option>
+          </select>
+        </label>
+        <label className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          Username:
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            readOnly={!isEditing}
+          />
+        </label>
+        <label className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          Password:
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            readOnly={!isEditing}
+          />
+        </label>
+        <label className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          Contact Number:
+          <input
+            type="text"
+            value={contactNumber}
+            onChange={(e) => setContactNumber(e.target.value)}
+            readOnly={!isEditing}
+          />
+        </label>
+        <label className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          Email Address:
+          <input
+            type="email"
+            value={emailAddress}
+            onChange={(e) => setEmailAddress(e.target.value)}
+            readOnly={!isEditing}
+          />
+        </label>
+      </form>
     </div>
   );
 }

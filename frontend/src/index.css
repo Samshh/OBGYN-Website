@@ -63,7 +63,7 @@
   }
 
   #innerNavContainer {
-    @apply max-w-[1280px] p-[0.5rem] mx-auto flex justify-center items-center bg-white border border-border w-fit rounded-lg gap-[0.5rem];
+    @apply max-w-[1280px] p-[0.5rem] mx-auto flex justify-center items-center bg-white border border-border w-fit rounded-lg gap-[0.5rem] pointer-events-auto;
   }
 
   nav {
@@ -75,7 +75,7 @@
   }
 
   .innerNav {
-    @apply bottom-0 justify-center items-center p-[1rem];
+    @apply bottom-0 justify-center items-center p-[1rem] pointer-events-none;
   }
 
   /* Buttons */
@@ -120,6 +120,6 @@
   --font-main: "Poppins";
   --accent-color: #03bf67;
   --black-color: #161616;
-  --white-color: #e7e7e7;
+  --white-color: #ffffff;
   --border-color: #d9d9d9;
 }

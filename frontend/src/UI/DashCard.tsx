@@ -37,7 +37,7 @@ function DashCardContent({ children, className }: DashCardContentProps) {
 }
 
 function Separator() {
-  return <div className="bg-border h-[1px] w-full"></div>;
+  return <div className="bg-border h-[1px] w-full" />;
 }
 
 DashCard.Title = DashCardTitle;
