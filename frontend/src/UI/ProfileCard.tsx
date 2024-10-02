@@ -43,7 +43,6 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
   };
 
   const handleSaveClick = () => {
-    // Update the profile here
     const updatedProfile = {
       FirstName: firstName,
       MiddleName: middleName,
@@ -61,7 +60,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
 
   return (
     <div className="p-[1.25rem] border border-border rounded-md flex flex-col justify-center items-start gap-[1rem] ">
-      <div className="flex justify-between w-full items-center">
+      <div className="flex justify-between w-full gap-[1rem] items-center">
         <h2>Profile</h2>
         <div className="flex justify-center items-center gap-[0.5rem]">
           {isEditing && (

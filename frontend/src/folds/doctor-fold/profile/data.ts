@@ -16,3 +16,16 @@ export const DoctorProfileData = [
     EmailAddress: "juliet@email.com",
   }
 ];
+
+export const DoctorScheduleData = [
+  {
+    Schedule: {
+      ScheduleID: 1,
+      DoctorID: 1,
+      Day: "Monday",
+      TimeIn: "08:00:00",
+      TimeOut: "17:00:00",
+    }
+  }
+]
+

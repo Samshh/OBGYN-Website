@@ -14,10 +14,11 @@ export default function Profile() {
         </div>
         <div className="grid grid-cols-1 grid-rows-2 gap-[1rem] lg:grid-cols-2 lg:grid-rows-1">
           <ProfileCard profile={profile} />
-          <DashCard className="items-center justify-center select-none">
-            <h2>
-              Comming Soon<em>.</em>
-            </h2>
+          <DashCard>
+            <DashCard.Title className="flex items-center gap-[1rem] justify-between">Sched. <button type="button">Add leave +</button></DashCard.Title>
+            <DashCard.Content>
+              Add a data table here for the 
+            </DashCard.Content>
           </DashCard>
         </div>
       </div>
