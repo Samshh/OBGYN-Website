@@ -12,25 +12,25 @@ module.exports = new EntitySchema({
     FirstName: {
       type: "varchar",
       length: 30,
-      nullable: false, 
+      nullable: false,
     },
     MiddleName: {
       type: "varchar",
       length: 30,
-      nullable: true,  
+      nullable: true,
     },
     LastName: {
       type: "varchar",
       length: 30,
-      nullable: false, 
+      nullable: false,
     },
     BirthDate: {
       type: "date",
-      nullable: false, 
+      nullable: false,
     },
     SexID: {
       type: "int",
-      nullable: false,  
+      nullable: false,
     },
     HomeAddress: {
       type: "varchar",
@@ -40,22 +40,22 @@ module.exports = new EntitySchema({
     UserName: {
       type: "varchar",
       length: 30,
-      nullable: false, 
+      nullable: false,
     },
     UserPassword: {
       type: "varchar",
       length: 100,
-      nullable: false, 
+      nullable: false,
     },
     ContactNumber: {
       type: "varchar",
       length: 100,
-      nullable: false, 
+      nullable: false,
     },
     EmailAddress: {
       type: "varchar",
       length: 100,
-      nullable: false, 
+      nullable: false,
     },
   },
 });

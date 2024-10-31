@@ -16,6 +16,6 @@ module.exports = new EntitySchema({
     EndDateTime: {
       type: "datetime",
       nullable: false,
-    }, 
+    },
   },
 });

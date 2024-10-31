@@ -1,7 +1,16 @@
 const express = require("express");
+const cors = require("cors"); // Import cors
 const AppDataSource = require("./data-source");
+const userRoutes = require("./routes/userRoutes");
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(cors({
+  origin: 'http://localhost:5173', // Correct the origin to http
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 app.use(express.json());
 
@@ -10,19 +19,13 @@ AppDataSource.initialize()
     console.log("Data Source has been initialized!");
 
     // Routes
-    app.get("/fetch-admin", async (req, res) => {
-      try {
-        const adminRepository = AppDataSource.getRepository("Admin");
-        const admins = await adminRepository.find();
-        res.json(admins);
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed" });
-      }
-    });
+    app.use("/users", userRoutes); // Ensure this line is correct
 
     // Start Server
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
   })
-  .catch((error) => console.log("Error during Data Source initialization:", error));
+  .catch((error) =>
+    console.log("Error during Data Source initialization:", error)
+  );

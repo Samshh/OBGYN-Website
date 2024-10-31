@@ -28,6 +28,6 @@ module.exports = new EntitySchema({
     Note: {
       type: "text",
       nullable: true,
-    }
+    },
   },
 });
