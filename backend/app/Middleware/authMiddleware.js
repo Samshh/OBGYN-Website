@@ -2,6 +2,16 @@ const jwt = require("jsonwebtoken");
 
 const secret = "123";
 
-// Remove the authenticateToken function as it is no longer needed
+const authenticateToken = (req, res, next) => {
+  const token = req.header("Authorization")?.split(" ")[1];
+  if (!token) return res.sendStatus(401);
 
-module.exports = {}; // Update the export to an empty object or remove the file if not needed
+  jwt.verify(token, secret, (err, user) => {
+    if (err) return res.sendStatus(403);
+    if (user.table !== "Admin" && user.table !== "Patient") return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+};
+
+module.exports = authenticateToken;

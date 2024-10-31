@@ -8,7 +8,7 @@ interface RegisterStore {
   middleName: string | null;
   lastName: string | null;
   birthDate: string | null;
-  seggs: string | null;
+  seggs: number | null;
   homeAddress: string | null;
 
   // step 2
@@ -28,7 +28,7 @@ interface RegisterActions {
   setMiddleName: (newMiddleName: string) => void;
   setLastName: (newLastName: string) => void;
   setBirthDate: (newBirthDate: string) => void;
-  setSeggs: (newSeggs: string) => void;
+  setSeggs: (newSeggs: number) => void;
   setHomeAddress: (newHomeAddress: string) => void;
 
   // step 2

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import useRegisterStore from "./store";
 import { useShallow } from "zustand/react/shallow";
 import { Navigate, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function RegisterFold() {
   const [
@@ -85,19 +86,29 @@ export default function RegisterFold() {
     );
   };
 
-  const handleData = () => {
-    console.log({
-      firstName,
-      middleName,
-      lastName,
-      birthDate,
-      seggs,
-      homeAddress,
-      username,
-      password,
-      contactNumber,
-      emailAddress,
-    });
+  const handleData = async () => {
+    const patientData = {
+      FirstName: firstName,
+      MiddleName: middleName,
+      LastName: lastName,
+      BirthDate: birthDate,
+      SexID: seggs,
+      HomeAddress: homeAddress,
+      UserName: username,
+      UserPassword: password,
+      ContactNumber: contactNumber,
+      EmailAddress: emailAddress,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/users/createPatient",
+        patientData
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

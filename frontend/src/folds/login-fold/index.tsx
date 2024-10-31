@@ -27,9 +27,14 @@ export default function LoginFold() {
     setter(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
+
+    
     e.preventDefault();
     navigate("/doctor");
+
   };
 
   return (

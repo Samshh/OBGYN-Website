@@ -40,6 +40,11 @@ export default function RegisterStep1() {
       setter(e.target.value);
     };
 
+  const handleSelectChange =
+    (setter: (value: number) => void) => (e: ChangeEvent<HTMLSelectElement>) => {
+      setter(Number(e.target.value));
+    };
+
   return (
     <>
       <div className="flex flex-col gap-[0.5rem]">
@@ -100,17 +105,13 @@ export default function RegisterStep1() {
         <select
           id="seggs"
           value={seggs || ""}
-          onChange={(e) =>
-            handleChange(setSeggs)(
-              e as unknown as ChangeEvent<HTMLInputElement>
-            )
-          }
+          onChange={handleSelectChange(setSeggs)}
         >
           <option value="" disabled>
             Select
           </option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
+          <option value={1}>Male</option>
+          <option value={2}>Female</option>
         </select>
       </div>
       <div className="flex flex-col gap-[0.5rem]">

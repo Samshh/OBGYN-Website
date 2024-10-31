@@ -9,6 +9,12 @@ module.exports = new EntitySchema({
       type: "int",
       generated: true,
     },
+    Role: {
+      type: "varchar",
+      length: 30,
+      nullable: false,
+      default: "Admin",
+    },
     FirstName: {
       type: "varchar",
       length: 30,
