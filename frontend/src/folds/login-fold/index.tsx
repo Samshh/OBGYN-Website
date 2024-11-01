@@ -1,69 +1,100 @@
-import { useState, useEffect, useCallback, ChangeEvent } from "react";
+import axios from "axios";
+import { useState, useEffect, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginFold() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isFormValid, setIsFormValid] = useState(false);
-  const [isUsernameValid, setIsUsernameValid] = useState(true);
-  const [isPasswordValid, setIsPasswordValid] = useState(true);
 
   const navigate = useNavigate();
 
-  const validateForm = useCallback(() => {
-    const usernameValid = username.trim().length > 0;
-    const passwordValid = password.length >= 8;
-    setIsUsernameValid(usernameValid);
-    setIsPasswordValid(passwordValid);
-    setIsFormValid(usernameValid && passwordValid);
-  }, [username, password]);
+  const handleChange =
+    (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
+      setter(e.target.value);
+    };
+
+  const loginAPI = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Logging in");
+    const loginData = {
+      EmailAddress: email,
+      UserPassword: password,
+    };
+
+    const doctorEndpoint = "http://localhost:3000/users/loginAdmin";
+    const patientEndpoint = "http://localhost:3000/users/loginPatient";
+
+    try {
+      let response = await axios.post(doctorEndpoint, loginData, {
+        withCredentials: true,
+      });
+
+      if (response.data.status === 1) {
+        console.log("Login successful as Doctor:", response.data);
+        return response.data;
+      }
+
+      response = await axios.post(patientEndpoint, loginData, {
+        withCredentials: true,
+      });
+
+      if (response.data.status === 1) {
+        console.log("Login successful as Patient:", response.data);
+        return response.data;
+      }
+
+      throw new Error(
+        response.data.message || "Login failed for both Doctor and Patient"
+      );
+    } catch (error) {
+      console.error("Login error:", error);
+    }
+  };
 
   useEffect(() => {
-    validateForm();
-  }, [username, password, validateForm]);
+    const checkAuth = async () => {
+      try {
+        const response = await axios.post("http://localhost:3000/users/auth", {
+          withCredentials: true,
+        });
+        const data = await response.data;
 
-  const handleChange =
-  (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
-    setter(e.target.value);
-  };
+        if (data && data.user.TypeIs === 1) {
+          navigate("/doctor");
+        } else if (data && data.user.TypeIs === 2) {
+          navigate("/patient");
+        } else {
+          console.log("Invalid User");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-
-
-  const handleSubmit = async (e: React.FormEvent) => {
-
-    
-    e.preventDefault();
-    navigate("/doctor");
-
-  };
+    checkAuth();
+  }, [navigate]);
 
   return (
     <section>
       <div className="flex flex-grow flex-col justify-center gap-[2rem] items-center">
-        <form id="homeForm" onSubmit={handleSubmit}>
+        <form id="homeForm" onSubmit={loginAPI}>
           <h1>
             Login<em className="font-normal text-accent">.</em>
           </h1>
           <div className="flex flex-col gap-[1rem]">
             <div className="flex flex-col gap-[0.5rem]">
-              <label htmlFor="username">
-                Username
-                {!isUsernameValid && <span className="text-red-500"> *</span>}
-              </label>
+              <label htmlFor="email">Email</label>
               <input
-                type="text"
-                name="username"
-                id="username"
+                type="email"
+                name="email"
+                id="email"
                 placeholder="samshh"
-                value={username}
-                onChange={handleChange(setUsername)}
+                value={email}
+                onChange={handleChange(setEmail)}
               />
             </div>
             <div className="flex flex-col gap-[0.5rem]">
-              <label htmlFor="password">
-                Password
-                {!isPasswordValid && <span className="text-red-500"> *</span>}
-              </label>
+              <label htmlFor="password">Password</label>
               <input
                 type="password"
                 name="password"
@@ -74,7 +105,7 @@ export default function LoginFold() {
               />
             </div>
           </div>
-          <button type="submit" className="specialButton" disabled={!isFormValid}>
+          <button type="submit" className="specialButton">
             Login
           </button>
         </form>
