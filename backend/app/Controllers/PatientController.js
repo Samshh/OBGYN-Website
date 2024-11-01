@@ -2,6 +2,9 @@ const AppDataSource = require("../../data-source");
 const jwt = require("jsonwebtoken");
 const cookie = require("cookie");
 
+const patientRepository = AppDataSource.getRepository("Patient");
+const adminRepository = AppDataSource.getRepository("Admin");
+
 const loginPatient = async (req, res) => {
   try {
     const { EmailAddress, UserPassword } = req.body;
@@ -25,7 +28,7 @@ const loginPatient = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.EmailAddress },
+      { TypeIs: 2, PatientID: user.PatientID, EmailAddress: user.EmailAddress },
       "your_secret_key", // Ensure this matches the secret key in authjwt.js
       { expiresIn: "6h" }
     );
@@ -56,8 +59,8 @@ const loginPatient = async (req, res) => {
 
 const getPatients = async (req, res) => {
   try {
-    const userRepository = AppDataSource.getRepository("Patient");
-    const users = await userRepository.find();
+    const patientRepository = AppDataSource.getRepository("Patient");
+    const users = await patientRepository.find();
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: "Database query failed" });
@@ -66,9 +69,22 @@ const getPatients = async (req, res) => {
 
 const createPatient = async (req, res) => {
   try {
-    const userRepository = AppDataSource.getRepository("Patient");
-    const newUser = userRepository.create(req.body);
-    const result = await userRepository.save(newUser);
+    const { EmailAddress } = req.body;
+
+    // Check if email is already used in Patient table
+    const existingPatient = await patientRepository.findOne({ where: { EmailAddress } });
+    if (existingPatient) {
+      return res.status(400).json({ error: "Email is already used by another patient." });
+    }
+
+    // Check if email is already used in Admin table
+    const existingAdmin = await adminRepository.findOne({ where: { EmailAddress } });
+    if (existingAdmin) {
+      return res.status(400).json({ error: "Email is already used by an admin." });
+    }
+
+    const newUser = patientRepository.create(req.body);
+    const result = await patientRepository.save(newUser);
     res.status(201).json(result);
   } catch (error) {
     res.status(500).json({ error: "Database query failed" });
@@ -77,8 +93,8 @@ const createPatient = async (req, res) => {
 
 const getPatientById = async (req, res) => {
   try {
-    const userRepository = AppDataSource.getRepository("Patient");
-    const user = await userRepository.findOneBy({ PatientID: req.params.id });
+    const patientRepository = AppDataSource.getRepository("Patient");
+    const user = await patientRepository.findOneBy({ PatientID: req.params.id });
     if (user) {
       res.json(user);
     } else {
@@ -88,10 +104,24 @@ const getPatientById = async (req, res) => {
     res.status(500).json({ error: "Database query failed" });
   }
 };
-
+const getPatientRole = async (req, res) => {
+  const { PatientID, EmailAddress } = req.body;
+  try {
+    const user = await patientRepository.findOneBy({ PatientID: PatientID, EmailAddress: EmailAddress });
+    if (user) {
+      res.json(user.Role);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Database query failed" });
+  }
+};
 
 module.exports = {
   getPatients,
+  getPatientRole,
   createPatient,
   getPatientById,
   loginPatient,
