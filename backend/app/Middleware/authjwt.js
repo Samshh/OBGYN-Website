@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
 
 const authenticateTokenWeb = (req, res, next) => {
-  const token = req.body.token; // Extract token from the request body
-
+  const token = req.cookies.token; 
+  console.log(token);
+  
   if (!token) {
     console.log("No token provided");
     return res
@@ -14,7 +15,9 @@ const authenticateTokenWeb = (req, res, next) => {
     const decoded = jwt.verify(token, "your_secret_key");
     req.user = decoded;
     console.log("Token is valid");
-    res.status(200).json({ message: "Token is valid", claims: decoded });
+
+    res.status(200).json({ message: "Token is valid", user: decoded });
+  
     next();
   } catch (ex) {
     console.log("Invalid token");

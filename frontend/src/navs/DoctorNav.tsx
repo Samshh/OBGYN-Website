@@ -2,6 +2,8 @@ import { Icon } from "@iconify/react";
 import useDoctorStore from "@/folds/doctor-fold/store";
 import { useShallow } from "zustand/react/shallow";
 import { useNavigate } from "react-router-dom";
+import cookies from "js-cookie";
+import axios from "axios";
 
 export default function DoctorNav() {
   const [currentTab, setCurrentTab] = useDoctorStore(
@@ -10,8 +12,23 @@ export default function DoctorNav() {
 
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    //handle logout
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/users/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        cookies.remove("token");
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
   };
 
   return (

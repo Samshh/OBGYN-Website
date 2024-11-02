@@ -40,6 +40,7 @@ const loginAdmin = async (req, res) => {
         httpOnly: true,
         maxAge: 60 * 60, // 1 hour
         path: "/",
+        sameSite: "strict", // Ensure sameSite attribute is set
       })
     );
 
@@ -57,11 +58,61 @@ const loginAdmin = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+    // Clear the token cookie
+    res.setHeader(
+      "Set-Cookie",
+      cookie.serialize("token", "", {
+        httpOnly: true,
+        sameSite: "strict",
+        path: "/",
+        maxAge: -1, 
+      })
+    );
+
+    // Send a response indicating the admin has been logged out
+    res.status(200).json({ message: "Admin logged out successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Logout failed" });
+  }
+};
+
 const getAdmin = async (req, res) => {
   try {
     const users = await adminRepository.find();
     res.json(users);
   } catch (error) {
+    res.status(500).json({ error: "Database query failed" });
+  }
+};
+
+const updateAdmin = async (req, res) => {
+  try {
+    const { AdminID, EmailAddress } = req.body;
+    const user = await adminRepository.findOneBy({ AdminID });
+
+    const existingAdmin = await adminRepository.findOne({ where: { EmailAddress } });
+    if (existingAdmin && existingAdmin.AdminID !== AdminID) {
+      return res.status(400).json({ error: "Email is already used by another admin." });
+    }
+    
+    // Check if email is already used in Patient table
+    const existingPatient = await patientRepository.findOne({ where: { EmailAddress } });
+    if (existingPatient && existingPatient.PatientID !== AdminID) {
+      return res.status(400).json({ error: "Email is already used by a patient." });
+    }
+
+    if (user) {
+      const updatedUser = await adminRepository.update(user.AdminID, req.body);
+      res.json(updatedUser);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+
+}catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Database query failed" });
   }
 };
@@ -110,4 +161,6 @@ module.exports = {
   getAdmin,
   getAdminRole,
   createAdmin,
+  logout,
+  updateAdmin,
 };

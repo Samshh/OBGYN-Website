@@ -11,6 +11,8 @@ const {
   getAdmin,
   getAdminRole,
   createAdmin,
+  logout,
+  updateAdmin,
 } = require("../app/Controllers/AdminController");
 const { authenticateTokenWeb } = require("../app/Middleware/authjwt");
 // const authenticateToken = require("../app/Middleware/authMiddleware");
@@ -30,20 +32,16 @@ router.get("/getPatientRole/", getPatientRole);
 //post
 router.post("/loginAdmin", loginAdmin);
 router.post("/createAdmin", createAdmin);
+router.post("/updateAdmin", updateAdmin);
 
 //get
 router.get("/getAdmin", getAdmin);
 router.get("/getAdminRole/", getAdminRole);
 
+
+router.post("/logout", logout);
+
 //Auth Routes
-router.post(
-  "/auth",
-  (req, res, next) => {
-    authenticateTokenWeb(req, res, next);
-  },
-  (req, res) => {
-    res.status(200).json({ message: "Token is valid" });
-  }
-);
+router.post("/auth", authenticateTokenWeb);
 
 module.exports = router;

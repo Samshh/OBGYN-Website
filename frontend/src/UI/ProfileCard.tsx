@@ -1,10 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
-
-interface Sex {
-  SexID: number;
-  SexName: string;
-}
+import axios from "axios";
 
 interface DoctorProfile {
   AdminID: number;
@@ -12,10 +8,9 @@ interface DoctorProfile {
   MiddleName: string;
   LastName: string;
   BirthDate: string;
-  Age: number;
-  Sex: Sex;
-  Username: string;
-  Password: string;
+  SexID: number;
+  UserName: string;
+  UserPassword: string;
   ContactNumber: string;
   EmailAddress: string;
 }
@@ -26,36 +21,48 @@ interface ProfileCardProps {
 
 export default function ProfileCard({ profile }: ProfileCardProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [birthDate, setBirthDate] = useState<Date | null>(
-    new Date(profile.BirthDate)
-  );
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [firstName, setFirstName] = useState(profile.FirstName);
   const [middleName, setMiddleName] = useState(profile.MiddleName);
   const [lastName, setLastName] = useState(profile.LastName);
-  const [sex, setSex] = useState(profile.Sex.SexID);
-  const [username, setUsername] = useState(profile.Username);
-  const [password, setPassword] = useState(profile.Password);
+  const [sex, setSex] = useState(profile.SexID);
+  const [username, setUsername] = useState(profile.UserName);
+  const [password, setPassword] = useState(profile.UserPassword);
   const [contactNumber, setContactNumber] = useState(profile.ContactNumber);
   const [emailAddress, setEmailAddress] = useState(profile.EmailAddress);
+
+  useEffect(() => {
+    const parsedDate = Date.parse(profile.BirthDate);
+    setBirthDate(!isNaN(parsedDate) ? new Date(parsedDate) : null);
+  }, [profile.BirthDate]);
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
   };
 
-  const handleSaveClick = () => {
-    const updatedProfile = {
-      FirstName: firstName,
-      MiddleName: middleName,
-      LastName: lastName,
-      BirthDate: birthDate?.toISOString().split("T")[0],
-      Sex: sex,
-      Username: username,
-      Password: password,
-      ContactNumber: contactNumber,
-      EmailAddress: emailAddress,
-    };
-    console.log("Updated Profile: ", updatedProfile);
-    setIsEditing(!isEditing);
+  const handleSaveClick = async () => {
+    try {
+      const updatedProfile = {
+        AdminID: profile.AdminID,
+        FirstName: firstName,
+        MiddleName: middleName,
+        LastName: lastName,
+        BirthDate: birthDate?.toISOString().split("T")[0],
+        SexID: sex,
+        UserName: username,
+        UserPassword: password,
+        ContactNumber: contactNumber,
+        EmailAddress: emailAddress,
+      };
+      await axios.post(
+        "http://localhost:3000/users/updateAdmin",
+        updatedProfile
+      );
+      console.log("Updated Profile: ", updatedProfile);
+      setIsEditing(!isEditing);
+    } catch (error) {
+      console.error("Failed to save profile", error);
+    }
   };
 
   return (
@@ -64,14 +71,15 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
         <h2>Profile</h2>
         <div className="flex justify-center items-center gap-[0.5rem]">
           {isEditing && (
-            <button onClick={() => handleSaveClick()} type="button" className="specialButton">
+            <button
+              onClick={() => handleSaveClick()}
+              type="button"
+              className="specialButton"
+            >
               Save
             </button>
           )}
-          <button
-            type="button"
-            onClick={handleEditClick}
-          >
+          <button type="button" onClick={handleEditClick}>
             {isEditing ? <>&times;</> : "Edit"}
           </button>
         </div>

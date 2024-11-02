@@ -16,6 +16,7 @@ export default function LoginFold() {
   const loginAPI = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Logging in");
+
     const loginData = {
       EmailAddress: email,
       UserPassword: password,
@@ -25,38 +26,74 @@ export default function LoginFold() {
     const patientEndpoint = "http://localhost:3000/users/loginPatient";
 
     try {
-      let response = await axios.post(doctorEndpoint, loginData, {
+      // Attempt Doctor login
+      const doctorResponse = await axios.post(doctorEndpoint, loginData, {
         withCredentials: true,
       });
 
-      if (response.data.status === 1) {
-        console.log("Login successful as Doctor:", response.data);
-        return response.data;
+      if (doctorResponse.data.status === 1) {
+        console.log("Login successful as Doctor:", doctorResponse.data);
+        checkAuth();
+        return doctorResponse.data;
       }
+    } catch (error) {
+      console.error("Doctor login error:", error);
+    }
 
-      response = await axios.post(patientEndpoint, loginData, {
+    try {
+      // Attempt Patient login
+      const patientResponse = await axios.post(patientEndpoint, loginData, {
         withCredentials: true,
       });
 
-      if (response.data.status === 1) {
-        console.log("Login successful as Patient:", response.data);
-        return response.data;
+      if (patientResponse.data.status === 1) {
+        console.log("Login successful as Patient:", patientResponse.data);
+        checkAuth();
+        return patientResponse.data;
       }
 
       throw new Error(
-        response.data.message || "Login failed for both Doctor and Patient"
+        patientResponse.data.message || "Login failed for Patient"
       );
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Patient login error:", error);
+      throw new Error("Login failed for both Doctor and Patient");
+    }
+  };
+  
+  const checkAuth = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/users/auth",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      const data = response.data;
+
+      if (data && data.user.TypeIs === 1) {
+        navigate("/doctor");
+      } else if (data && data.user.TypeIs === 2) {
+        navigate("/patient");
+      } else {
+        console.log("Invalid User");
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.post("http://localhost:3000/users/auth", {
-          withCredentials: true,
-        });
+        const response = await axios.post(
+          "http://localhost:3000/users/auth",
+          {},
+          {
+            withCredentials: true,
+          }
+        );
         const data = await response.data;
 
         if (data && data.user.TypeIs === 1) {
