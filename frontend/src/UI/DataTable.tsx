@@ -1,39 +1,55 @@
-interface Column {
+interface Column<T> {
   header: string;
-  key: string | ((row: Record<string, unknown>) => string);
+  key: string | ((row: T) => string);
 }
 
-interface DataTableProps {
+interface DataTableProps<T> {
   className?: string;
-  data: Array<Record<string, unknown>>;
-  columns: Array<Column>;
-  onRowClick?: (row: Record<string, unknown>) => void;
+  data: Array<T>;
+  columns: Array<Column<T>>;
+  onRowClick?: (row: T) => void;
 }
 
-export default function DataTable({
+export default function DataTable<T>({
   className,
   data,
   columns,
   onRowClick,
-}: DataTableProps) {
+}: DataTableProps<T>) {
   if (!data.length) return null;
 
   const getValue = (
-    row: Record<string, unknown>,
-    key: string | ((row: Record<string, unknown>) => string)
+    row: T,
+    key: string | ((row: T) => string)
   ) => {
     if (typeof key === "function") {
       return key(row);
     }
-    return key.split(".").reduce<unknown>((acc, part) => {
+    const value = key.split(".").reduce<unknown>((acc, part) => {
       if (acc && typeof acc === "object" && part in acc) {
         return (acc as Record<string, unknown>)[part];
       }
       return undefined;
     }, row) as string | undefined;
+
+    // Handle StatusID specifically
+    if (key === "StatusID" && value !== undefined) {
+      switch (value) {
+        case "1":
+          return "Pending";
+        case "2":
+          return "Done";
+        case "3":
+          return "Cancelled";
+        default:
+          return value;
+      }
+    }
+
+    return value;
   };
 
-  const handleRowClick = (row: Record<string, unknown>) => {
+  const handleRowClick = (row: T) => {
     if (onRowClick) {
       onRowClick(row);
     }

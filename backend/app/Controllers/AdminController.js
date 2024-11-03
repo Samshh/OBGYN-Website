@@ -4,6 +4,17 @@ const cookie = require("cookie");
 
 const adminRepository = AppDataSource.getRepository("Admin");
 const patientRepository = AppDataSource.getRepository("Patient");
+const appointmentRepository = AppDataSource.getRepository("Appointment");
+
+
+const getAppointments = async (req, res) => {
+  try {
+    const appointments = await appointmentRepository.find();
+    res.json(appointments);
+  } catch (error) {
+    res.status(500).json({ error: "Database query failed" });
+  }
+}
 
 const loginAdmin = async (req, res) => {
   try {
@@ -157,6 +168,7 @@ const getAdminRole = async (req, res) => {
 };
 
 module.exports = {
+  getAppointments,
   loginAdmin,
   getAdmin,
   getAdminRole,

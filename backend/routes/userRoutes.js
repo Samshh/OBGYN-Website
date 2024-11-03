@@ -5,6 +5,7 @@ const {
   getPatientById,
   loginPatient,
   getPatientRole,
+  createAppointment
 } = require("../app/Controllers/PatientController");
 const {
   loginAdmin,
@@ -13,9 +14,9 @@ const {
   createAdmin,
   logout,
   updateAdmin,
+  getAppointments
 } = require("../app/Controllers/AdminController");
 const { authenticateTokenWeb } = require("../app/Middleware/authjwt");
-// const authenticateToken = require("../app/Middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -23,6 +24,7 @@ const router = express.Router();
 //post
 router.post("/createPatient", createPatient);
 router.post("/loginPatient", loginPatient);
+router.post("/createAppointment", createAppointment);
 //get
 router.get("/getPatients", getPatients);
 router.get("/getPatient/:id", getPatientById);
@@ -37,6 +39,7 @@ router.post("/updateAdmin", updateAdmin);
 //get
 router.get("/getAdmin", getAdmin);
 router.get("/getAdminRole/", getAdminRole);
+router.get("/getAppointments", getAppointments);
 
 
 router.post("/logout", logout);

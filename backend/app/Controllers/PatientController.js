@@ -4,6 +4,18 @@ const cookie = require("cookie");
 
 const patientRepository = AppDataSource.getRepository("Patient");
 const adminRepository = AppDataSource.getRepository("Admin");
+const appointmentRepository = AppDataSource.getRepository("Appointment"); 
+
+const createAppointment = async (req, res) => {
+  try {
+    const { PatientID, StartDateTime, EndDateTime, StatusID, Note } = req.body;
+    const newAppointment = appointmentRepository.create({ PatientID, StartDateTime, EndDateTime, StatusID, Note });
+    const result = await appointmentRepository.save(newAppointment);
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Database query failed" });
+  }
+}
 
 const loginPatient = async (req, res) => {
   try {
@@ -120,6 +132,7 @@ const getPatientRole = async (req, res) => {
 };
 
 module.exports = {
+  createAppointment,
   getPatients,
   getPatientRole,
   createPatient,

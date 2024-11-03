@@ -1,67 +1,91 @@
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import DashCard from "@/UI/DashCard";
 import DataTable from "@/UI/DataTable";
 import Modal from "@/UI/Modal";
-import { AppointmentData } from "./data";
-
-interface Patient {
-  FirstName: string;
-  LastName: string;
-}
-
-interface Status {
-  Status: string;
-}
+import axios from "axios";
 
 interface Appointment {
-  Patient: Patient;
-  ETA: string;
-  Status: Status;
+  AppointmentID: number;
+  PatientID: number;
+  StartDateTime: string;
+  EndDateTime: string;
+  StatusID: number;
   Note: string;
+}
+
+interface AppointmentWithPatient extends Appointment {
+  PatientName: string;
 }
 
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
+  const [appointmentData, setAppointmentData] = useState<
+    AppointmentWithPatient[]
+  >([]);
 
   const columns = [
     {
-      header: "Patient",
-      key: (row: Record<string, unknown>) => {
-        const patient = row.Patient as Patient;
-        return `${patient.FirstName} ${patient.LastName}`;
+      header: "Patient Name",
+      key: "PatientName",
+    },
+    {
+      header: "ETA",
+      key: (row: AppointmentWithPatient) => {
+        return new Date(row.StartDateTime).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
       },
     },
-    { header: "ETA", key: "ETA" },
-    { header: "Status", key: "Status.Status" },
+    { header: "Status ID", key: "StatusID" },
     { header: "Note", key: "Note" },
   ];
 
-  const isAppointment = (
-    row: Record<string, unknown>
-  ): row is Record<string, unknown> & Appointment => {
-    return (
-      typeof row.Patient === "object" &&
-      row.Patient !== null &&
-      "FirstName" in row.Patient &&
-      "LastName" in row.Patient &&
-      typeof row.ETA === "string" &&
-      typeof row.Status === "object" &&
-      row.Status !== null &&
-      "Status" in row.Status &&
-      typeof row.Note === "string"
-    );
+  const handleRowClick = (row: AppointmentWithPatient) => {
+    setSelectedAppointment(row);
+    setIsModalOpen(true);
   };
 
-  const handleRowClick = (row: Record<string, unknown>) => {
-    if (isAppointment(row)) {
-      setSelectedAppointment(row);
-      setIsModalOpen(true);
-    } else {
-      console.error("Invalid appointment data");
+  const getPatientByID = async (patientID: number) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/users/getPatient/${patientID}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching patient data: ", error);
     }
   };
+
+  const getAppointemntData = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/users/getAppointments"
+      );
+      const appointments: Appointment[] = response.data;
+
+      const appointmentsWithPatient = await Promise.all(
+        appointments.map(async (appointment) => {
+          const patient = await getPatientByID(appointment.PatientID);
+          return {
+            ...appointment,
+            PatientName: `${patient.FirstName} ${patient.LastName}`,
+          };
+        })
+      );
+
+      setAppointmentData(appointmentsWithPatient);
+    } catch (error) {
+      console.error("Error fetching appointment data: ", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    getAppointemntData();
+  }, [getAppointemntData]);
 
   return (
     <div className="flex-grow flex flex-col h-auto">
@@ -79,9 +103,9 @@ export default function Dashboard() {
             <DashCard.Title>Appointments</DashCard.Title>
             <DashCard.Separator />
             <DashCard.Content className="overflow-x-auto">
-              <DataTable
+              <DataTable<AppointmentWithPatient>
                 className="w-full"
-                data={AppointmentData}
+                data={appointmentData}
                 columns={columns}
                 onRowClick={handleRowClick}
               />
@@ -108,42 +132,42 @@ export default function Dashboard() {
             </div>
             <Modal.Separator />
             <p>
-              <strong>Patient:</strong> {selectedAppointment.Patient.FirstName}{" "}
-              {selectedAppointment.Patient.LastName}
+              <strong>Patient ID:</strong> {selectedAppointment.PatientID}
             </p>
             <p>
-              <strong>ETA:</strong> {selectedAppointment.ETA}
+              <strong>ETA:</strong>{" "}
+              {new Date(selectedAppointment.StartDateTime).toLocaleTimeString(
+                [],
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+                }
+              )}
             </p>
             <div className="flex gap-[1rem] items-center justify-start">
               <label htmlFor="status">
-              <strong>Status:</strong>
+                <strong>Status:</strong>
               </label>
               <select
-              id="status"
-              value={selectedAppointment.Status.Status}
-              onChange={(e) =>
-                setSelectedAppointment({
-                ...selectedAppointment,
-                Status: { Status: e.target.value },
-                })
-              }
+                id="status"
+                value={selectedAppointment.StatusID}
+                onChange={(e) =>
+                  setSelectedAppointment({
+                    ...selectedAppointment,
+                    StatusID: parseInt(e.target.value),
+                  })
+                }
               >
-              <option value="1">Done</option>
-              <option value="2">Pending</option>
-              <option value="3">Cancelled</option>
+                <option value="1">Pending</option>
+                <option value="2">Done</option>
+                <option value="3">Cancelled</option>
               </select>
             </div>
             <p>
               <strong>Note:</strong> {selectedAppointment.Note}
             </p>
           </div>
-          <Modal.Separator />
-          <Modal.Close
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-          >
-            Rebook
-          </Modal.Close>
         </Modal>
       )}
     </div>
