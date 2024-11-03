@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 interface DashCardProps {
   children: ReactNode;
   className?: string;
+  id?: string;
 }
 
 interface DashCardTitleProps {
@@ -18,9 +19,11 @@ interface DashCardContentProps {
 export default function DashCard({
   children,
   className,
+  id,
 }: DashCardProps) {
   return (
       <div
+        id={id}
         className={`flex flex-col p-[1rem] bg-white border border-border rounded-lg gap-[1rem] w-full ${className}`}
       >
         {children}

@@ -32,14 +32,14 @@ export default function DataTable<T>({
       return undefined;
     }, row) as string | undefined;
 
-    // Handle StatusID specifically
-    if (key === "StatusID" && value !== undefined) {
-      switch (value) {
-        case "1":
+ if (key === "StatusID" && value !== undefined) {
+      const numericValue = Number(value);
+      switch (numericValue) {
+        case 1:
           return "Pending";
-        case "2":
+        case 2:
           return "Done";
-        case "3":
+        case 3:
           return "Cancelled";
         default:
           return value;

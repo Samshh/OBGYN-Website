@@ -4,18 +4,30 @@ const cookie = require("cookie");
 
 const patientRepository = AppDataSource.getRepository("Patient");
 const adminRepository = AppDataSource.getRepository("Admin");
-const appointmentRepository = AppDataSource.getRepository("Appointment"); 
+const appointmentRepository = AppDataSource.getRepository("Appointment");
 
 const createAppointment = async (req, res) => {
   try {
+    const patientIdExist = await patientRepository.findOne({
+      where: { PatientID: req.body.PatientID },
+    });
+    if (!patientIdExist) {
+      return res.status(400).json({ error: "PatientID does not exist." });
+    }
     const { PatientID, StartDateTime, EndDateTime, StatusID, Note } = req.body;
-    const newAppointment = appointmentRepository.create({ PatientID, StartDateTime, EndDateTime, StatusID, Note });
+    const newAppointment = appointmentRepository.create({
+      PatientID,
+      StartDateTime,
+      EndDateTime,
+      StatusID,
+      Note,
+    });
     const result = await appointmentRepository.save(newAppointment);
     res.status(201).json(result);
   } catch (error) {
     res.status(500).json({ error: "Database query failed" });
   }
-}
+};
 
 const loginPatient = async (req, res) => {
   try {
@@ -45,20 +57,28 @@ const loginPatient = async (req, res) => {
       { expiresIn: "6h" }
     );
 
+    // Debugging statement to check PatientID before setting the cookie
+    console.log("Setting PatientID cookie with value: ", user.PatientID);
+
     // Set cookie
-    res.setHeader(
-      "Set-Cookie",
+    res.setHeader("Set-Cookie", [
       cookie.serialize("token", token, {
         httpOnly: true,
-        maxAge: 60 * 60, // 1 hour
+        maxAge: 60 * 60 * 6,
         path: "/",
-      })
-    );
+      }),
+      cookie.serialize("PatientID", user.PatientID.toString(), {
+        maxAge: 60 * 60 * 6, 
+        path: "/",
+      }),
+    ]);
+
+    console.log("Set-Cookie header: ", res.getHeader("Set-Cookie"));
 
     return res.json({
       status: 1,
       message: "Login successful.",
-      token // Optionally return the token in the response body for easier debugging
+      token,
     });
   } catch (error) {
     console.log(error);
@@ -84,15 +104,23 @@ const createPatient = async (req, res) => {
     const { EmailAddress } = req.body;
 
     // Check if email is already used in Patient table
-    const existingPatient = await patientRepository.findOne({ where: { EmailAddress } });
+    const existingPatient = await patientRepository.findOne({
+      where: { EmailAddress },
+    });
     if (existingPatient) {
-      return res.status(400).json({ error: "Email is already used by another patient." });
+      return res
+        .status(400)
+        .json({ error: "Email is already used by another patient." });
     }
 
     // Check if email is already used in Admin table
-    const existingAdmin = await adminRepository.findOne({ where: { EmailAddress } });
+    const existingAdmin = await adminRepository.findOne({
+      where: { EmailAddress },
+    });
     if (existingAdmin) {
-      return res.status(400).json({ error: "Email is already used by an admin." });
+      return res
+        .status(400)
+        .json({ error: "Email is already used by an admin." });
     }
 
     const newUser = patientRepository.create(req.body);
@@ -106,7 +134,9 @@ const createPatient = async (req, res) => {
 const getPatientById = async (req, res) => {
   try {
     const patientRepository = AppDataSource.getRepository("Patient");
-    const user = await patientRepository.findOneBy({ PatientID: req.params.id });
+    const user = await patientRepository.findOneBy({
+      PatientID: req.params.id,
+    });
     if (user) {
       res.json(user);
     } else {
@@ -119,7 +149,10 @@ const getPatientById = async (req, res) => {
 const getPatientRole = async (req, res) => {
   const { PatientID, EmailAddress } = req.body;
   try {
-    const user = await patientRepository.findOneBy({ PatientID: PatientID, EmailAddress: EmailAddress });
+    const user = await patientRepository.findOneBy({
+      PatientID: PatientID,
+      EmailAddress: EmailAddress,
+    });
     if (user) {
       res.json(user.Role);
     } else {

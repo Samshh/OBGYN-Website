@@ -20,7 +20,7 @@ interface AppointmentWithPatient extends Appointment {
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] =
-    useState<Appointment | null>(null);
+    useState<AppointmentWithPatient | null>(null);
   const [appointmentData, setAppointmentData] = useState<
     AppointmentWithPatient[]
   >([]);
@@ -87,6 +87,18 @@ export default function Dashboard() {
     getAppointemntData();
   }, [getAppointemntData]);
 
+  const handleSave = () => {
+    // Implement save functionality here
+    console.log("Save clicked");
+    setIsModalOpen(false);
+  };
+
+  const handleRebook = () => {
+    // Implement rebook functionality here
+    console.log("Rebook clicked");
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="flex-grow flex flex-col h-auto">
       <div className="flex-col flex gap-[1rem]">
@@ -97,6 +109,7 @@ export default function Dashboard() {
           <h1>
             Dr<em>.</em> Juliet
           </h1>
+          <p className="uppercase font-light">{new Date().toDateString()}</p>
         </div>
         <div className="grid grid-cols-1 grid-rows-2 gap-[1rem] lg:grid-cols-2 lg:grid-rows-1">
           <DashCard className="h-full">
@@ -132,7 +145,7 @@ export default function Dashboard() {
             </div>
             <Modal.Separator />
             <p>
-              <strong>Patient ID:</strong> {selectedAppointment.PatientID}
+              <strong>Patient Name:</strong> {selectedAppointment.PatientName}
             </p>
             <p>
               <strong>ETA:</strong>{" "}
@@ -167,6 +180,12 @@ export default function Dashboard() {
             <p>
               <strong>Note:</strong> {selectedAppointment.Note}
             </p>
+            <div className="flex gap-[1rem] justify-end">
+              <button onClick={handleSave}>Save</button>
+              <button className="specialButton" onClick={handleRebook}>
+                Rebook
+              </button>
+            </div>
           </div>
         </Modal>
       )}

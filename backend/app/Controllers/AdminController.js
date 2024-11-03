@@ -49,7 +49,7 @@ const loginAdmin = async (req, res) => {
       "Set-Cookie",
       cookie.serialize("token", token, {
         httpOnly: true,
-        maxAge: 60 * 60, // 1 hour
+        maxAge: 60 * 60 * 6,
         path: "/",
         sameSite: "strict", // Ensure sameSite attribute is set
       })
