@@ -75,6 +75,9 @@ export default function Userdata() {
         })
       );
 
+      // Sort appointments by AppointmentID in descending order
+      appointmentsWithPatient.sort((a, b) => b.AppointmentID - a.AppointmentID);
+
       console.log("Appointments with patient data: ", appointmentsWithPatient); // Log appointments with patient data
       setAppointmentData(appointmentsWithPatient);
     } catch (error) {

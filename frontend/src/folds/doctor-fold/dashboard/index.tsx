@@ -25,6 +25,11 @@ export default function Dashboard() {
     AppointmentWithPatient[]
   >([]);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [isRebookModalOpen, setIsRebookModalOpen] = useState(false);
+  const [rebookFormData, setRebookFormData] = useState({
+    StartDateTime: "",
+    Note: "",
+  });
 
   const columns = [
     {
@@ -152,8 +157,48 @@ export default function Dashboard() {
   };
 
   const handleRebook = () => {
-    console.log("Rebook clicked");
+    setIsRebookModalOpen(true);
     setIsModalOpen(false);
+  };
+
+  const handleRebookChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setRebookFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleRebookSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const startDateTime = new Date(rebookFormData.StartDateTime);
+    const endDateTime = new Date(startDateTime);
+    endDateTime.setHours(endDateTime.getHours() + 1);
+
+    const appointmentData = {
+      ...rebookFormData,
+      EndDateTime: endDateTime.toISOString(),
+      StatusID: 1,
+      PatientID: selectedAppointment?.PatientID,
+    };
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/users/createAppointment/${selectedAppointment?.PatientID}`,
+        appointmentData
+      );
+      if (response.status === 201) {
+        alert("Appointment rebooked successfully!");
+        setIsRebookModalOpen(false);
+        getAppointemntData();
+      } else {
+        alert("Failed to rebook appointment.");
+      }
+    } catch {
+      alert("Failed to rebook appointment.");
+    }
   };
 
   return (
@@ -258,6 +303,47 @@ export default function Dashboard() {
               </button>
             </div>
           </div>
+        </Modal>
+      )}
+      {isRebookModalOpen && (
+        <Modal isOpen={isRebookModalOpen} onClose={() => setIsRebookModalOpen(false)}>
+          <h2>Rebook an Appointment</h2>
+          <form onSubmit={handleRebookSubmit} className="flex flex-col gap-[1rem]">
+            <div className="flex flex-col gap-[0.5rem]">
+              <label>Select date & time:</label>
+              <input
+                title="StartDateTime"
+                type="datetime-local"
+                name="StartDateTime"
+                value={rebookFormData.StartDateTime}
+                onChange={handleRebookChange}
+                required
+                min={new Date().toISOString().slice(0, 16)}
+                max={new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+                  .toISOString()
+                  .slice(0, 16)}
+                className="cursor-pointer"
+              />
+            </div>
+            <div className="flex flex-col gap-[0.5rem]">
+              <label>Note:</label>
+              <textarea
+                title="Note"
+                name="Note"
+                value={rebookFormData.Note}
+                onChange={handleRebookChange}
+                className="border border-border rounded-lg p-[0.5rem]"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-[1rem]">
+              <button className="specialButton" type="submit">
+                Rebook Appointment
+              </button>
+              <button type="button" onClick={() => setIsRebookModalOpen(false)}>
+                Close
+              </button>
+            </div>
+          </form>
         </Modal>
       )}
     </div>
