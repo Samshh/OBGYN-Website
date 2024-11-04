@@ -7,7 +7,8 @@ const {
   getPatientRole,
   createAppointment,
   getPatientAppointments,
-  updatePatient
+  updatePatient,
+  updateAppointment
 } = require("../app/Controllers/PatientController");
 const {
   loginAdmin,
@@ -26,8 +27,9 @@ const router = express.Router();
 //post
 router.post("/createPatient", createPatient);
 router.post("/loginPatient", loginPatient);
-router.post("/createAppointment", createAppointment);
+router.post("/createAppointment/:id", createAppointment);
 router.post("/updatePatient/:id", updatePatient);
+router.post("/updateAppointment/:id", updateAppointment);
 
 //get
 router.get("/getPatients", getPatients);

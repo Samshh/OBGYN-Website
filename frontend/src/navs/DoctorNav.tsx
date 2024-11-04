@@ -59,7 +59,7 @@ export default function DoctorNav() {
           }`}
           title="home"
         >
-          <Icon className="Icon" icon="heroicons:calendar" />
+          <Icon className="Icon" icon="si:clipboard-line" />
         </button>
         <button
           onClick={() => (navigate("/login"), handleLogout())}

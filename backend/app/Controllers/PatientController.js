@@ -6,6 +6,37 @@ const patientRepository = AppDataSource.getRepository("Patient");
 const adminRepository = AppDataSource.getRepository("Admin");
 const appointmentRepository = AppDataSource.getRepository("Appointment");
 
+const updateAppointment = async (req, res) => {
+  try {
+    const { id: AppointmentID } = req.params;
+    const { StatusID, Note } = req.body;
+    console.log("Received request to update appointment:", AppointmentID);
+    console.log("Update data:", { StatusID, Note });
+
+    const appointment = await appointmentRepository.findOne({
+      where: { AppointmentID },
+      select: ["AppointmentID"], // Ensure only AppointmentID is selected
+    });
+
+    if (!appointment) {
+      console.log("Appointment not found:", AppointmentID);
+      return res.status(404).json({ error: "Appointment not found." });
+    }
+
+    await appointmentRepository.update(AppointmentID, { StatusID, Note });
+    const updatedAppointment = await appointmentRepository.findOne({
+      where: { AppointmentID },
+      select: ["AppointmentID", "StatusID", "Note"], // Ensure only these fields are selected
+    });
+    console.log("Updated appointment:", updatedAppointment);
+    res.json(updatedAppointment);
+
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    res.status(500).json({ error: "Database query failed" });
+  }
+};
+
 const getPatientAppointments = async (req, res) => {
   try {
     const { PatientID } = req.params;
@@ -33,14 +64,19 @@ const getPatientAppointments = async (req, res) => {
 };
 
 const createAppointment = async (req, res) => {
+  const { id: PatientID } = req.params;
+
   try {
     const patientIdExist = await patientRepository.findOne({
-      where: { PatientID: req.body.PatientID },
+      where: { PatientID: PatientID },
     });
+
     if (!patientIdExist) {
       return res.status(400).json({ error: "PatientID does not exist." });
     }
-    const { PatientID, StartDateTime, EndDateTime, StatusID, Note } = req.body;
+
+    const { StartDateTime, EndDateTime, StatusID, Note } = req.body;
+
     const newAppointment = appointmentRepository.create({
       PatientID,
       StartDateTime,
@@ -48,11 +84,17 @@ const createAppointment = async (req, res) => {
       StatusID,
       Note,
     });
+
     const result = await appointmentRepository.save(newAppointment);
     res.status(201).json(result);
   } catch (error) {
+    console.error(error); // Log the error for debugging purposes
     res.status(500).json({ error: "Database query failed" });
   }
+};
+
+module.exports = {
+  createAppointment,
 };
 
 const loginPatient = async (req, res) => {
@@ -232,4 +274,5 @@ module.exports = {
   loginPatient,
   getPatientAppointments,
   updatePatient,
+  updateAppointment,
 };

@@ -21,7 +21,10 @@ export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] =
     useState<AppointmentWithPatient | null>(null);
-  const [appointmentData, setAppointmentData] = useState<AppointmentWithPatient[]>([]);
+  const [appointmentData, setAppointmentData] = useState<
+    AppointmentWithPatient[]
+  >([]);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   const columns = [
     {
@@ -32,8 +35,8 @@ export default function Dashboard() {
       header: "ETA",
       key: (row: AppointmentWithPatient) => {
         return new Date(row.StartDateTime).toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
+          hour: "2-digit",
+          minute: "2-digit",
           hour12: false,
         });
       },
@@ -58,6 +61,25 @@ export default function Dashboard() {
     }
   };
 
+  const updateAppointment = async (
+    AppointmentID: number,
+    updatedData: Partial<AppointmentWithPatient>
+  ) => {
+    try {
+      console.log("Sending request to update appointment:", AppointmentID);
+      console.log("Update data:", updatedData);
+
+      const response = await axios.post(
+        `http://localhost:3000/users/updateAppointment/${AppointmentID}`,
+        updatedData
+      );
+      console.log("Updated appointment:", response.data);
+      getAppointemntData();
+    } catch (error) {
+      console.error("Error updating appointment:", error);
+    }
+  };
+
   const getAppointemntData = useCallback(async () => {
     try {
       const response = await axios.get(
@@ -66,18 +88,33 @@ export default function Dashboard() {
       const appointments: Appointment[] = response.data;
 
       // Filter appointments for today
-      const today = new Date().toISOString().split("T")[0];
-      const todayAppointments = appointments.filter(appointment => 
-        appointment.StartDateTime.split("T")[0] === today
+      const today = new Date();
+      const todayStart = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+      const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000); // Add 24 hours
+
+      const todayAppointments = appointments.filter((appointment) => {
+        const appointmentStart = new Date(appointment.StartDateTime);
+        return appointmentStart >= todayStart && appointmentStart < todayEnd;
+      });
+
+      // Filter out cancelled appointments
+      const activeAppointments = todayAppointments.filter(
+        (appointment) => appointment.StatusID !== 3
       );
 
-      // Sort appointments by time (morning to noon)
-      todayAppointments.sort((a, b) => 
-        new Date(a.StartDateTime).getTime() - new Date(b.StartDateTime).getTime()
+      // Sort appointments by start time
+      activeAppointments.sort(
+        (a, b) =>
+          new Date(a.StartDateTime).getTime() -
+          new Date(b.StartDateTime).getTime()
       );
 
       const appointmentsWithPatient = await Promise.all(
-        todayAppointments.map(async (appointment) => {
+        activeAppointments.map(async (appointment) => {
           const patient = await getPatientByID(appointment.PatientID);
           return {
             ...appointment,
@@ -96,14 +133,25 @@ export default function Dashboard() {
     getAppointemntData();
   }, [getAppointemntData]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000); // Update every second
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, []);
+
   const handleSave = () => {
-    // Implement save functionality here
-    console.log("Save clicked");
+    if (selectedAppointment) {
+      updateAppointment(selectedAppointment.AppointmentID, {
+        StatusID: selectedAppointment.StatusID,
+        Note: selectedAppointment.Note,
+      });
+    }
     setIsModalOpen(false);
   };
 
   const handleRebook = () => {
-    // Implement rebook functionality here
     console.log("Rebook clicked");
     setIsModalOpen(false);
   };
@@ -111,18 +159,32 @@ export default function Dashboard() {
   return (
     <div className="flex-grow flex flex-col h-auto">
       <div className="flex-col flex gap-[1rem]">
-        <div className="flex flex-col justify-center items-start sticky top-0 bg-white py-[1rem]">
-          <h3>
-            Hello<em>!</em>
-          </h3>
-          <h1>
-            Dr<em>.</em> Juliet
-          </h1>
-          <p className="uppercase font-light">{new Date().toDateString()}</p>
+        <div className="flex justify-between items-end sticky top-0 bg-white py-[1rem]">
+          <div className="flex flex-col justify-center items-start">
+            <h3>
+              Hello<em>!</em>
+            </h3>
+            <h1>
+              Dr<em>.</em> Juliet
+            </h1>
+          </div>
+          <div className="text-end">
+            <p className="uppercase">{currentTime.toDateString()}</p>
+            <h3>
+              {currentTime.toLocaleString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false,
+              })}
+            </h3>
+          </div>
         </div>
         <div className="grid grid-cols-1 grid-rows-2 gap-[1rem] lg:grid-cols-2 lg:grid-rows-1">
           <DashCard className="h-full">
-            <DashCard.Title>Appointments</DashCard.Title>
+            <DashCard.Title>
+              Appointments <p>(for today)</p>
+            </DashCard.Title>
             <DashCard.Separator />
             <DashCard.Content className="overflow-x-auto">
               <DataTable<AppointmentWithPatient>
@@ -158,11 +220,14 @@ export default function Dashboard() {
             </p>
             <p>
               <strong>ETA:</strong>{" "}
-              {new Date(selectedAppointment.StartDateTime).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false,
-              })}
+              {new Date(selectedAppointment.StartDateTime).toLocaleTimeString(
+                [],
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+                }
+              )}
             </p>
             <div className="flex gap-[1rem] items-center justify-start">
               <label htmlFor="status">

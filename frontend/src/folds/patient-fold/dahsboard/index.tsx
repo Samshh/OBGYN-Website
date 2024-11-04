@@ -5,7 +5,11 @@ import DashCard from "../../../UI/DashCard";
 import Modal from "../../../UI/Modal";
 
 interface Appointment {
+  AppointmentID: number;
   StartDateTime: string;
+  EndDateTime: string;
+  StatusID: number;
+  Note: string;
 }
 
 export default function Dashboard() {
@@ -14,12 +18,8 @@ export default function Dashboard() {
     Note: "",
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentAppointment, setCurrentAppointment] = useState({
-    StartDateTime: "2023-10-01T10:00",
-    EndDateTime: "2023-10-01T11:00",
-    StatusID: 1,
-    Note: "Initial consultation",
-  });
+  const [currentAppointment, setCurrentAppointment] =
+    useState<Appointment | null>(null);
   const [PatientID, setPatientId] = useState<number>();
   const [isDoctorIn, setIsDoctorIn] = useState(true);
 
@@ -104,7 +104,6 @@ export default function Dashboard() {
     endDateTime.setHours(endDateTime.getHours() + 1);
 
     const appointmentData = {
-      PatientID: PatientID,
       ...formData,
       EndDateTime: endDateTime.toISOString(),
       StatusID: 1,
@@ -112,18 +111,40 @@ export default function Dashboard() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/users/createAppointment",
+        `http://localhost:3000/users/createAppointment/${PatientID}`,
         appointmentData
       );
       if (response.status === 201) {
         alert("Appointment booked successfully!");
-        setCurrentAppointment(appointmentData);
+        setCurrentAppointment({
+          AppointmentID: response.data.AppointmentID, // Use the ID from the response
+          ...appointmentData,
+        });
         setIsModalOpen(false);
       } else {
         alert("Failed to book appointment.");
       }
     } catch {
       alert("Failed to book appointment.");
+    }
+  };
+
+  const handleCancelAppointment = async () => {
+    if (currentAppointment) {
+      try {
+        const response = await axios.post(
+          `http://localhost:3000/users/updateAppointment/${currentAppointment.AppointmentID}`,
+          { StatusID: 3 }
+        );
+        if (response.status === 200) {
+          alert("Appointment cancelled successfully!");
+          setCurrentAppointment(null);
+        } else {
+          alert("Failed to cancel appointment.");
+        }
+      } catch {
+        alert("Failed to cancel appointment.");
+      }
     }
   };
 
@@ -166,12 +187,23 @@ export default function Dashboard() {
           `http://localhost:3000/users/getPatientAppointments/${PatientID}`
         );
         if (response.data && response.data.length > 0) {
-          const appointments = response.data.sort(
-            (a: Appointment, b: Appointment) =>
-              new Date(b.StartDateTime).getTime() -
-              new Date(a.StartDateTime).getTime()
+          const now = new Date();
+          const upcomingAppointments = response.data.filter(
+            (appointment: Appointment) =>
+              new Date(appointment.StartDateTime) >= now &&
+              appointment.StatusID !== 2 && // Exclude "Done"
+              appointment.StatusID !== 3 // Exclude "Cancelled"
           );
-          setCurrentAppointment(appointments[0]);
+          if (upcomingAppointments.length > 0) {
+            const nearestAppointment = upcomingAppointments.sort(
+              (a: Appointment, b: Appointment) =>
+                new Date(a.StartDateTime).getTime() -
+                new Date(b.StartDateTime).getTime()
+            )[0];
+            setCurrentAppointment(nearestAppointment);
+          } else {
+            setCurrentAppointment(null);
+          }
         }
       } catch (error) {
         console.error("Failed to fetch appointments: ", error);
@@ -190,21 +222,18 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col gap-[1rem]">
-      <h1>
-        Dashboard<em>.</em>
-      </h1>
       <div className="grid grid-rows-2 gap-[1rem]">
         <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-1 gap-[1rem]">
           <DashCard>
             <h2>Prescription</h2>
             <h2 className="text-border">
-              Comming Soon<em>.</em>
+              Coming Soon<em>.</em>
             </h2>
           </DashCard>
           <DashCard>
             <h2>Diagnosis</h2>
             <h2 className="text-border">
-              Comming Soon<em>.</em>
+              Coming Soon<em>.</em>
             </h2>
           </DashCard>
         </div>
@@ -212,25 +241,36 @@ export default function Dashboard() {
           <DashCard id="current-appointment">
             <DashCard.Title>Upcoming Appointment</DashCard.Title>
             <DashCard.Separator />
-            <DashCard.Content className="gap-[0.5rem] flex flex-col overflow-auto">
-              <p>
-                <strong>Start:</strong>{" "}
-                {formatDateTime(currentAppointment.StartDateTime)}
-              </p>
-              <p>
-                <strong>End:</strong>{" "}
-                {formatDateTime(currentAppointment.EndDateTime)}
-              </p>
-              <p>
-                <strong>Status: </strong>
-                {currentAppointment.StatusID === 1
-                  ? "Pending"
-                  : currentAppointment.StatusID}
-              </p>
-              <p>
-                <strong>Note: </strong>
-                {currentAppointment.Note}
-              </p>
+            <DashCard.Content className="flex flex-col overflow-auto">
+              {currentAppointment ? (
+                <div className="flex flex-col gap-[1.5rem]">
+                  <div className="flex flex-col gap-[1rem]">
+                    <p>
+                      <strong>Start:</strong>{" "}
+                      {formatDateTime(currentAppointment.StartDateTime)}
+                    </p>
+                    <p>
+                      <strong>End:</strong>{" "}
+                      {formatDateTime(currentAppointment.EndDateTime)}
+                    </p>
+                    <p>
+                      <strong>Status: </strong>
+                      {currentAppointment.StatusID === 1
+                        ? "Pending"
+                        : currentAppointment.StatusID === 2
+                        ? "Done"
+                        : "Cancelled"}
+                    </p>
+                    <p>
+                      <strong>Note: </strong>
+                      {currentAppointment.Note}
+                    </p>
+                  </div>
+                  <button onClick={handleCancelAppointment}>cancel appointment</button>
+                </div>
+              ) : (
+                <p>No upcoming appointments.</p>
+              )}
             </DashCard.Content>
           </DashCard>
           <div className="grid grid-rows-2 gap-[1rem] w-full">
