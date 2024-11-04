@@ -1,4 +1,4 @@
-import ProfileCard from "@/UI/ProfileCard";
+import ProfileCard from "@/folds/doctor-fold/profile/components/AdminProfileCard";
 import DashCard from "@/UI/DashCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
