@@ -6,6 +6,32 @@ const patientRepository = AppDataSource.getRepository("Patient");
 const adminRepository = AppDataSource.getRepository("Admin");
 const appointmentRepository = AppDataSource.getRepository("Appointment");
 
+const getPatientAppointments = async (req, res) => {
+  try {
+    const { PatientID } = req.params;
+
+    if (!PatientID) {
+      return res.status(400).json({ error: "PatientID is required." });
+    }
+
+    const patientIdExist = await patientRepository.findOne({
+      where: { PatientID },
+    });
+
+    if (!patientIdExist) {
+      return res.status(400).json({ error: "PatientID does not exist." });
+    }
+
+    const appointments = await appointmentRepository.find({
+      where: { PatientID },
+    });
+
+    res.json(appointments);
+  } catch (error) {
+    res.status(500).json({ error: "Database query failed" });
+  }
+};
+
 const createAppointment = async (req, res) => {
   try {
     const patientIdExist = await patientRepository.findOne({
@@ -68,7 +94,7 @@ const loginPatient = async (req, res) => {
         path: "/",
       }),
       cookie.serialize("PatientID", user.PatientID.toString(), {
-        maxAge: 60 * 60 * 6, 
+        maxAge: 60 * 60 * 6,
         path: "/",
       }),
     ]);
@@ -171,4 +197,5 @@ module.exports = {
   createPatient,
   getPatientById,
   loginPatient,
+  getPatientAppointments,
 };

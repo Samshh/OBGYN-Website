@@ -5,7 +5,8 @@ const {
   getPatientById,
   loginPatient,
   getPatientRole,
-  createAppointment
+  createAppointment,
+  getPatientAppointments
 } = require("../app/Controllers/PatientController");
 const {
   loginAdmin,
@@ -29,6 +30,7 @@ router.post("/createAppointment", createAppointment);
 router.get("/getPatients", getPatients);
 router.get("/getPatient/:id", getPatientById);
 router.get("/getPatientRole/", getPatientRole);
+router.get("/getPatientAppointments/:PatientID", getPatientAppointments);
 
 //Admin Routes
 //post
@@ -40,7 +42,6 @@ router.post("/updateAdmin", updateAdmin);
 router.get("/getAdmin", getAdmin);
 router.get("/getAdminRole/", getAdminRole);
 router.get("/getAppointments", getAppointments);
-
 
 router.post("/logout", logout);
 

@@ -21,9 +21,7 @@ export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] =
     useState<AppointmentWithPatient | null>(null);
-  const [appointmentData, setAppointmentData] = useState<
-    AppointmentWithPatient[]
-  >([]);
+  const [appointmentData, setAppointmentData] = useState<AppointmentWithPatient[]>([]);
 
   const columns = [
     {
@@ -34,8 +32,8 @@ export default function Dashboard() {
       header: "ETA",
       key: (row: AppointmentWithPatient) => {
         return new Date(row.StartDateTime).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
+          hour: '2-digit',
+          minute: '2-digit',
           hour12: false,
         });
       },
@@ -67,8 +65,19 @@ export default function Dashboard() {
       );
       const appointments: Appointment[] = response.data;
 
+      // Filter appointments for today
+      const today = new Date().toISOString().split("T")[0];
+      const todayAppointments = appointments.filter(appointment => 
+        appointment.StartDateTime.split("T")[0] === today
+      );
+
+      // Sort appointments by time (morning to noon)
+      todayAppointments.sort((a, b) => 
+        new Date(a.StartDateTime).getTime() - new Date(b.StartDateTime).getTime()
+      );
+
       const appointmentsWithPatient = await Promise.all(
-        appointments.map(async (appointment) => {
+        todayAppointments.map(async (appointment) => {
           const patient = await getPatientByID(appointment.PatientID);
           return {
             ...appointment,
@@ -125,8 +134,8 @@ export default function Dashboard() {
             </DashCard.Content>
           </DashCard>
           <DashCard className="items-center justify-center">
-            <h2>
-              Coming Soon <em>.</em>
+            <h2 className="text-border">
+              Coming Soon<em>.</em>
             </h2>
           </DashCard>
         </div>
@@ -149,14 +158,11 @@ export default function Dashboard() {
             </p>
             <p>
               <strong>ETA:</strong>{" "}
-              {new Date(selectedAppointment.StartDateTime).toLocaleTimeString(
-                [],
-                {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false,
-                }
-              )}
+              {new Date(selectedAppointment.StartDateTime).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              })}
             </p>
             <div className="flex gap-[1rem] items-center justify-start">
               <label htmlFor="status">
